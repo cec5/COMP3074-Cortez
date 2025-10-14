@@ -4,7 +4,7 @@ import scipy
 import pickle
 import numpy as np
 
-from nltk.corpus import stopwords;
+from nltk.corpus import stopwords
 from nltk.stem.snowball import PorterStemmer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -15,21 +15,42 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 document_path = os.path.join(script_dir,"data")
 corpus = {}
 doc_ids = []
-for file in os.listdir(document_path):
-    filepath = document_path + os.sep + file
-    with open(filepath, encoding='utf8', errors='ignore', mode='r') as document:
-        content = document.read()
-        document_id = file
-        corpus[document_id] = content
-        doc_ids.append(document_id)
+
+print(f"Loading documents from: {document_path}")
+
+if not os.path.exists(document_path):
+    print("Error: The 'data' directory was not found.")
+else:
+    for dirpath, dirnames, filenames in os.walk(document_path):
+        for filename in filenames:
+            if filename.endswith('.txt'):
+                filepath = os.path.join(dirpath, filename)
+                try:
+                    with open(filepath, encoding='utf8', errors='ignore', mode='r') as document:
+                        content = document.read()
+                        relative_path = os.path.relpath(dirpath, document_path)
+                        if relative_path == '.':
+                            document_id = filename
+                        else:
+                            document_id = os.path.join(relative_path, filename)
+
+                        corpus[document_id] = content
+                        doc_ids.append(document_id)
+                except Exception as e:
+                    print(f"Could not read file {filepath}: {e}")
+                    
+    print(f"Successfully loaded {len(corpus)} documents.")
+
 
 p_stemmer = PorterStemmer()
+ENGLISH_STOP_WORDS = set(stopwords.words('english'))
+
 def stemmed_words_analyzer():
     analyzer = CountVectorizer().build_analyzer()
-    return lambda doc: (p_stemmer.stem(w) for w in analyzer(doc))
+    return lambda doc: (p_stemmer.stem(w) for w in analyzer(doc) if w not in ENGLISH_STOP_WORDS)
 
 all_text = corpus.values()
-count_vect = CountVectorizer(stop_words=stopwords.words('english'), analyzer=stemmed_words_analyzer())
+count_vect = CountVectorizer(analyzer=stemmed_words_analyzer())
 X_train_counts = count_vect.fit_transform(all_text)
 tf_transformer = TfidfTransformer(use_idf=True, sublinear_tf=True).fit(X_train_counts)
 X_train_tf = tf_transformer.transform(X_train_counts)
@@ -59,19 +80,23 @@ while not stop:
         query_counts = count_vect.transform([query])
         query_tf = tf_transformer.transform(query_counts)
         query_vector = query_tf.toarray()[0]
-
         scores = []
- 
-        if np.linalg.norm(query_vector) == 0:
+        query_norm = np.linalg.norm(query_vector)
+        if query_norm == 0:
             print("Query contains no words from the vocabulary")
             scores = [(doc_id, 0.0) for doc_id in doc_ids]
         else:
             for i in range(X_train_tf.shape[0]):
                 doc_vector = X_train_tf.getrow(i).toarray()[0]
-                if np.linalg.norm(doc_vector) == 0:
+                doc_norm = np.linalg.norm(doc_vector)    
+                if doc_norm == 0:
                     score = 0.0
                 else:
-                    score = 1 - spatial.distance.cosine(doc_vector, query_vector)
+                    try:
+                        score = 1 - spatial.distance.cosine(doc_vector, query_vector)
+                    except ValueError:
+                        score = 0.0 
+                        
                 scores.append((doc_ids[i], score))
         scores.sort(key=lambda x: x[1], reverse=True)
 
