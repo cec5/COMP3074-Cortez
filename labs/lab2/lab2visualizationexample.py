@@ -1,6 +1,6 @@
 import seaborn as sns
 import matplotlib.pyplot as plt
-import bandas as pd
+import pandas as pd
 import numpy as np
 
 # Artificial data for three classifiers
