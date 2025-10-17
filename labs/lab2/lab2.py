@@ -5,6 +5,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
+from joblib import dump, load
 
 # Import all data first (tf I didn't do it this way last week)
 label_dir = {
@@ -32,6 +33,11 @@ tfidf_transformer = TfidfTransformer(use_idf=True, sublinear_tf=True).fit(X_trai
 X_train_tf = tfidf_transformer.transform (X_train_counts)
 
 classifier = LogisticRegression(random_state=0).fit(X_train_tf, y_train)
+
+# Joblib 
+dump(classifier, 'joblib/classifier.joblib')
+dump(count_vect, 'joblib/count_vect.joblib')
+dump(tfidf_transformer, 'joblib/tfidf_transformer.joblib')
 
 X_new_counts = count_vect.transform(X_test)
 X_new_tfidf = tfidf_transformer.transform(X_new_counts)
