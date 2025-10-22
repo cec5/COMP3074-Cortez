@@ -28,8 +28,8 @@ def process_user_query(query):
         return "SYSTEM: [ERROR]: Internal Classification Issue"
 
 def main():
-    print("JOSEFINA: Hello! I am Josefina, your personal assistant, let's chat!")
-    print("SYSTEM: Type 'STOP' or 'QUIT' to quit. You can ask for 'help' or say 'hi'.")
+    print("JOSEFINA: Hello! I am Josefina,let's chat!")
+    print("SYSTEM: Type 'STOP' or 'QUIT' to quit")
     stop = False
     while not stop:
         try:
