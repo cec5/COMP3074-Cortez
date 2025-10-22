@@ -1,24 +1,35 @@
-from small_talk import SmallTalkHandler
+from intent_classifier import IntentClassifier
+from small_talk import SmallTalkHandler 
 
-small_talk_handler = SmallTalkHandler()
+intent_classifier = IntentClassifier() 
+small_talk_handler = SmallTalkHandler() 
 
-# Not sure if I like this, will find out if it's problematic very soon though.
+session_context = {
+    'name': None
+}
+
 def process_user_query(query):
     query = query.lower().strip()
     if not query:
         return "JOSEFINA: Please say something!"
-    small_talk_response = small_talk_handler.get_small_talk_response(query, threshold=0.1) 
-    
-    if small_talk_response:
-        #print("SYSTEM: [Intent: Small Talk]")
-        return small_talk_response
+    intent, score = intent_classifier.classify(query, threshold=0.2)
+
+    if intent == "SmallTalk":
+        return small_talk_handler.get_small_talk_response(query, threshold=0.1)     
+    elif intent == "IdentityManagement":
+        return f"SYSTEM: [Intent: Identity Management]"
+    elif intent == "Discoverability":
+        return f"SYSTEM: [Intent: Discoverability]"
+    elif intent == "QuestionAnswering":
+        return f"SYSTEM: [Intent: Question Answering]"
+    elif intent == "Unrecognised":
+        return "SYSTEM: [Intent Unrecognised]" 
     else:
-        # print("SYSTEM: [Intent: Unrecognised]")
-        return "I'm sorry, I didn't understand that. You can try asking about greetings."
+        return "SYSTEM: [ERROR]: Internal Classification Issue"
 
 def main():
-    print("JOSEFINA: Hello! I am Josefina, let's chat!")
-    print("SYSTEM: Type 'STOP' or 'QUIT' to quit.")
+    print("JOSEFINA: Hello! I am Josefina, your personal assistant, let's chat!")
+    print("SYSTEM: Type 'STOP' or 'QUIT' to quit. You can ask for 'help' or say 'hi'.")
     stop = False
     while not stop:
         try:

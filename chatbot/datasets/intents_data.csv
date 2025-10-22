@@ -1,0 +1,32 @@
+Phrase,Intent
+hello,SmallTalk
+hi there,SmallTalk
+greetings,SmallTalk
+how are you,SmallTalk
+what's up,SmallTalk
+bye,SmallTalk
+goodbye,SmallTalk
+later,SmallTalk
+it is good,SmallTalk
+it is bad,SmallTalk
+i am good,SmallTalk
+I am sad,SmallTalk
+I am bored,SmallTalk
+good morning,SmallTalk
+good evening,SmallTalk
+good afternoon,SmallTalk
+thank you,SmallTalk
+nice to meet you,SmallTalk
+my name is John,IdentityManagement
+i am called Jane,IdentityManagement
+you can call me Alex,IdentityManagement
+who am i,IdentityManagement
+what is my name,IdentityManagement
+help,Discoverability
+what can i do,Discoverability
+show me the available commands,Discoverability
+what are my options,Discoverability
+i need assistance,Discoverability
+what is the date,QuestionAnswering
+what day is it,QuestionAnswering
+what is the current time,QuestionAnswering
