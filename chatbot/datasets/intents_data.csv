@@ -3,30 +3,46 @@ hello,SmallTalk
 hi there,SmallTalk
 greetings,SmallTalk
 how are you,SmallTalk
-what's up,SmallTalk
+what is up,SmallTalk
 bye,SmallTalk
 goodbye,SmallTalk
 later,SmallTalk
 it is good,SmallTalk
 it is bad,SmallTalk
 i am good,SmallTalk
-I am sad,SmallTalk
-I am bored,SmallTalk
+i am sad,SmallTalk
+i am bored,SmallTalk
+i am well,SmallTalk
 good morning,SmallTalk
 good evening,SmallTalk
 good afternoon,SmallTalk
 thank,SmallTalk
+thanks,SmallTalk
 nice to meet you,SmallTalk
+what are you,SmallTalk
+what can you do,SmallTalk
+help,SmallTalk
+can you help,SmallTalk
+i need assistance,SmallTalk
+i am lost,SmallTalk
 my name is John,IdentityManagement
 i am called Jane,IdentityManagement
 you can call me Alex,IdentityManagement
 who am i,IdentityManagement
 what is my name,IdentityManagement
-help,Discoverability
-what can i do,Discoverability
-show me the available commands,Discoverability
-what are my options,Discoverability
-i need assistance,Discoverability
 what is the date,QuestionAnswering
 what day is it,QuestionAnswering
 what is the current time,QuestionAnswering
+tell me about,QuestionAnswering
+who is the leader of country,QuestionAnswering
+what do you know about this thing,QuestionAnswering
+what are this and that,QuestionAnswering
+what is thing,QuestionAnswering
+who discovered the,QuestionAnswering
+who invented the,QuestionAnswering
+who did something,QuestionAnswering
+how many,QuestionAnswering
+opinion on,QuestionAnswering
+feel about,QuestionAnswering
+thoughts on,QuestionAnswering
+think about,QuestionAnswering

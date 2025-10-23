@@ -37,17 +37,17 @@ class SmallTalkHandler:
 
     def get_small_talk_response(self, query, threshold):
         if self.questions_tfidf is None or self.vectorizer is None:
-            return None
+            return "SYSTEM: Error with small talk processing"
         processed_query = self._preprocess(query)
         if not processed_query.strip():
-            return None
+            return "SYSTEM: Error with small talk processing"
         query_tfidf = self.vectorizer.transform([processed_query])
         if query_tfidf.sum() == 0:
-            return None  
+            return "SYSTEM: No match for query within small talk"  
         similarity_scores = cosine_similarity(query_tfidf, self.questions_tfidf)[0]
         best_match_index = np.argmax(similarity_scores)
         best_score = similarity_scores[best_match_index]
         if best_score >= threshold:
             return f"JOSEFINA: {self.answers[best_match_index]}"
         else:
-            return None
+            return "SYSTEM: Error with small talk processing"

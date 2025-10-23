@@ -6,15 +6,15 @@ from nltk.stem import WordNetLemmatizer
 #from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
-class IntentClassifier:
-    def __init__(self, data_path="datasets/intents_data.csv"):
+class QAHandler:
+    def __init__(self, data_path="datasets/question_answer.csv"):
         self.lemmatizer = WordNetLemmatizer()
         self.vectorizer = None
-        self.intent_phrases_tfidf = None
-        self.phrases = []
-        self.intents = []
+        self.questions_tfidf = None
+        self.questions = []
+        self.answers = []
         self._load_and_train(data_path)
-
+        
     def _preprocess(self, text):
         text = text.lower()
         tokens = word_tokenize(text)
@@ -27,27 +27,27 @@ class IntentClassifier:
     def _load_and_train(self, data_path):
         try:
             df = pd.read_csv(data_path)
-            self.phrases = [self._preprocess(p) for p in df['Phrase'].tolist()]
-            self.intents = df['Intent'].tolist()
-            self.vectorizer = TfidfVectorizer(analyzer='word')
-            self.intent_phrases_tfidf = self.vectorizer.fit_transform(self.phrases)
+            self.questions = [self._preprocess(q) for q in df['Question'].tolist()]
+            self.answers = df['Answer'].tolist()
+            self.vectorizer = TfidfVectorizer(stop_words='english',analyzer='word')
+            self.questions_tfidf = self.vectorizer.fit_transform(self.questions)
         except Exception as e:
-            print(f"Error loading or training intent data: {e}")
+            print(f"SYSTEM: Error loading QA dataset: {e}")
             self.vectorizer = None
 
-    def classify(self, query, threshold):
-        if self.vectorizer is None:
-            return "SystemError", 0.0
+    def get_QA_response(self, query, threshold):
+        if self.questions_tfidf is None or self.vectorizer is None:
+            return "SYSTEM: Error with QA processing"
         processed_query = self._preprocess(query)
         if not processed_query.strip():
-            return "EmptyQuery", 0.0
+            return "SYSTEM: Error with QA processing"
         query_tfidf = self.vectorizer.transform([processed_query])
         if query_tfidf.sum() == 0:
-            return "Unrecognized", 0.0
-        similarity_scores = cosine_similarity(query_tfidf, self.intent_phrases_tfidf)[0]
+            return "JOSEFINA: I'm afraid I don't have the answer to that."
+        similarity_scores = cosine_similarity(query_tfidf, self.questions_tfidf)[0]
         best_match_index = np.argmax(similarity_scores)
         best_score = similarity_scores[best_match_index]
         if best_score >= threshold:
-            return self.intents[best_match_index], best_score
+            return f"JOSEFINA: {self.answers[best_match_index]}"
         else:
-            return "Unrecognized", best_score
+            return "JOSEFINA: I'm afraid I don't have the answer to that."

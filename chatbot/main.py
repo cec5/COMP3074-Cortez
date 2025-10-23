@@ -1,8 +1,10 @@
 from intent_classifier import IntentClassifier
-from small_talk import SmallTalkHandler 
+from small_talk import SmallTalkHandler
+from question_answer import QAHandler
 
 intent_classifier = IntentClassifier() 
-small_talk_handler = SmallTalkHandler() 
+small_talk_handler = SmallTalkHandler()
+qa_handler = QAHandler()
 
 def process_user_query(query):
     query = query.lower().strip()
@@ -14,12 +16,10 @@ def process_user_query(query):
         return small_talk_handler.get_small_talk_response(query, threshold=0.2)     
     elif intent == "IdentityManagement":
         return "SYSTEM: [Intent: Identity Management]"
-    elif intent == "Discoverability":
-        return "SYSTEM: [Intent: Discoverability]"
     elif intent == "QuestionAnswering":
-        return "SYSTEM: [Intent: Question Answering]"
-    elif intent == "Unrecognised":
-        return "JOSEFINA: Forgive me, but I'm unable to process what are you saying." 
+        return qa_handler.get_QA_response(query, threshold=0.3)
+    elif intent == "Unrecognized":
+        return "JOSEFINA: Forgive me, but I'm unable to recognize what you are saying." 
     else:
         return "SYSTEM: Error with internal classification"
 

@@ -2,9 +2,9 @@ Question,Answer
 hello,Hello there! I'm Josefina. How can I assist you today?
 hi,Hello there! I'm Josefina. How can I assist you today?
 hey,Hello there! I'm Josefina. How can I assist you today?
-what's up,"Not much, just here to chat. What's up with you?"
+what is up,"Not much, just here to chat. What's up with you?"
 nice to meet you,"Nice to meet you too, I'm glad we're chatting."
-pleased to meet you,"Nice to meet you too, I'm glad we're chatting."
+pleased to meet you,"Pleased to meet you too, I'm glad we're chatting."
 good morning,Good morning! I hope your day is off to a great start.
 good afternoon,Good afternoon! How's your day going so far?
 good evening,Good evening! How was your day?
@@ -12,10 +12,10 @@ it is good,That's good to hear!
 it is bad,I'm sorry to hear that.
 how are you,"I am good, thank you, what about you?"
 how are you doing,I'm functioning perfectly! How about you?
-i'm bored,Let's fix that! What would you like to talk about?
-i'm sad,I'm sorry to hear that.
-i'm good,That's wonderful to hear!
-i'm well,That's wonderful to hear!
+i am bored,Let's fix that! What would you like to talk about?
+i am sad,I'm sorry to hear that.
+i am good,That's wonderful to hear!
+i am well,That's wonderful to hear!
 not much,Nothing wrong with a quiet day.
 thank you,"You're very welcome, is there anything else I can help you with?"
 thanks,My pleasure!
@@ -23,3 +23,13 @@ thank you so much,"You're very welcome, I'm always happy to help."
 goodbye,"Goodbye, it was nice chatting, feel free to come back anytime."
 bye,"Goodbye, it was nice chatting, feel free to come back anytime."
 see you later,"See you later, take care."
+help,"What can I help you with?"
+i need help,"What can I help you with?"
+can you help me,"What can I help you with?"
+i need assistance,"What can I help you with?"
+i am lost,"We can have a little chat or ask you can ask me questions."
+who are you,"I am Josefina, a chatbot."
+what are you,"I am Josefina, a chatbot."
+what can you do,"At the moment, I am capable of small talk, question and answering, and name management"
+what can i do,"We can have a little chat or ask you can ask me questions."
+what to do,"We can have a little chat or ask you can ask me questions."
