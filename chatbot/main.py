@@ -17,7 +17,7 @@ def process_user_query(query):
     elif intent == "IdentityManagement":
         return "SYSTEM: [Intent: Identity Management]"
     elif intent == "QuestionAnswering":
-        return qa_handler.get_QA_response(query, threshold=0.3)
+        return qa_handler.get_QA_response(query, threshold=0.5)
     elif intent == "Unrecognized":
         return "JOSEFINA: Forgive me, but I'm unable to recognize what you are saying." 
     else:

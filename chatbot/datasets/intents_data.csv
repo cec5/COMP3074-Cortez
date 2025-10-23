@@ -1,48 +1,167 @@
 Phrase,Intent
 hello,SmallTalk
+hi,SmallTalk
+hey,SmallTalk
 hi there,SmallTalk
+hey there,SmallTalk
 greetings,SmallTalk
+good morning,SmallTalk
+good afternoon,SmallTalk
+good evening,SmallTalk
 how are you,SmallTalk
+how are you doing,SmallTalk
+how have you been,SmallTalk
+how is it going,SmallTalk
 what is up,SmallTalk
-bye,SmallTalk
-goodbye,SmallTalk
-later,SmallTalk
+what’s up,SmallTalk
+what are you doing,SmallTalk
+how’s everything,SmallTalk
+how’s life,SmallTalk
+how are things,SmallTalk
 it is good,SmallTalk
 it is bad,SmallTalk
 i am good,SmallTalk
+i am well,SmallTalk
+i am fine,SmallTalk
 i am sad,SmallTalk
 i am bored,SmallTalk
-i am well,SmallTalk
-good morning,SmallTalk
-good evening,SmallTalk
-good afternoon,SmallTalk
+i am happy,SmallTalk
+i am tired,SmallTalk
+i feel great,SmallTalk
+i feel down,SmallTalk
+not much,SmallTalk
+nothing much,SmallTalk
+same as always,SmallTalk
+just chilling,SmallTalk
 thank,SmallTalk
 thanks,SmallTalk
+thank you,SmallTalk
+thank you so much,SmallTalk
+appreciate it,SmallTalk
+thanks a lot,SmallTalk
+no problem,SmallTalk
+you’re welcome,SmallTalk
 nice to meet you,SmallTalk
+pleased to meet you,SmallTalk
+happy to meet you,SmallTalk
+it is nice talking to you,SmallTalk
+goodbye,SmallTalk
+bye,SmallTalk
+see you later,SmallTalk
+talk to you later,SmallTalk
+later,SmallTalk
+take care,SmallTalk
+have a nice day,SmallTalk
+have a good day,SmallTalk
+see you soon,SmallTalk
 what are you,SmallTalk
+who are you,SmallTalk
 what can you do,SmallTalk
-help,SmallTalk
+what can i do,SmallTalk
 can you help,SmallTalk
+can you help me,SmallTalk
+i need help,SmallTalk
 i need assistance,SmallTalk
 i am lost,SmallTalk
-my name is John,IdentityManagement
-i am called Jane,IdentityManagement
-you can call me Alex,IdentityManagement
+help,SmallTalk
+please help me,SmallTalk
+i feel lonely,SmallTalk
+i feel great today,SmallTalk
+you are funny,SmallTalk
+you are nice,SmallTalk
+you are friendly,SmallTalk
+that is cool,SmallTalk
+that is nice,SmallTalk
+that is great,SmallTalk
+you are awesome,SmallTalk
+thank you for helping me,SmallTalk
+it is nice chatting with you,SmallTalk
+i am talking to you,SmallTalk
+i like talking to you,SmallTalk
+i am glad we are chatting,SmallTalk
+i enjoy chatting with you,SmallTalk
+that was nice,SmallTalk
+this is fun,SmallTalk
+you are kind,SmallTalk
+i appreciate your help,SmallTalk
+
+my name is john,IdentityManagement
+i am called jane,IdentityManagement
+you can call me alex,IdentityManagement
+people call me mike,IdentityManagement
+call me emily,IdentityManagement
+you may call me chris,IdentityManagement
+the name is sophia,IdentityManagement
 who am i,IdentityManagement
 what is my name,IdentityManagement
+do you remember my name,IdentityManagement
+can you remember who i am,IdentityManagement
+do you know my name,IdentityManagement
+do you know who i am,IdentityManagement
+i told you my name,IdentityManagement
+let me tell you my name,IdentityManagement
+remember my name is ben,IdentityManagement
+forget my name,IdentityManagement
+change my name,IdentityManagement
+update my name,IdentityManagement
+record my name,IdentityManagement
+
 what is the date,QuestionAnswering
 what day is it,QuestionAnswering
 what is the current time,QuestionAnswering
+what time is it,QuestionAnswering
+what is today’s date,QuestionAnswering
+what is today,QuestionAnswering
 tell me about,QuestionAnswering
-who is the leader of country,QuestionAnswering
-what do you know about this thing,QuestionAnswering
-what are this and that,QuestionAnswering
-what is thing,QuestionAnswering
-who discovered the,QuestionAnswering
+tell me something about,QuestionAnswering
+can you tell me about,QuestionAnswering
+i want to know about,QuestionAnswering
+do you know about,QuestionAnswering
+what do you know about,QuestionAnswering
+what do you know about this,QuestionAnswering
+explain to me about,QuestionAnswering
+give me details about,QuestionAnswering
+who is the leader of,QuestionAnswering
+who is the president of,QuestionAnswering
+who is the prime minister of,QuestionAnswering
 who invented the,QuestionAnswering
-who did something,QuestionAnswering
+who discovered the,QuestionAnswering
+who made the,QuestionAnswering
+who designed the,QuestionAnswering
+who found the,QuestionAnswering
+who created the,QuestionAnswering
 how many,QuestionAnswering
+how much,QuestionAnswering
+how far,QuestionAnswering
+how long,QuestionAnswering
+where is,QuestionAnswering
+where can i find,QuestionAnswering
+where was it,QuestionAnswering
+why is,QuestionAnswering
+what causes,QuestionAnswering
+what happens if,QuestionAnswering
+when did,QuestionAnswering
+when was,QuestionAnswering
+when is,QuestionAnswering
+what are this and that,QuestionAnswering
+what are these things,QuestionAnswering
+what is thing,QuestionAnswering
+what are those,QuestionAnswering
+what are,QuestionAnswering
+what is this,QuestionAnswering
+what does it mean,QuestionAnswering
+define,QuestionAnswering
+meaning of,QuestionAnswering
+who did something,QuestionAnswering
+who built the,QuestionAnswering
+what can you tell me about,QuestionAnswering
+give me information about,QuestionAnswering
 opinion on,QuestionAnswering
 feel about,QuestionAnswering
 thoughts on,QuestionAnswering
 think about,QuestionAnswering
+what do you think about,QuestionAnswering
+what are your thoughts on,QuestionAnswering
+how do you feel about,QuestionAnswering
+explain why,QuestionAnswering
+explain how,QuestionAnswering
