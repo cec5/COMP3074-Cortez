@@ -26,10 +26,9 @@ class SmallTalkHandler:
 
     def _load_and_train(self, data_path):
         try:
-            df = pd.read_csv(full_path)
+            df = pd.read_csv(data_path)
             self.questions = [self._preprocess(q) for q in df['Question'].tolist()]
             self.answers = df['Answer'].tolist()
-
             self.vectorizer = TfidfVectorizer(analyzer='word')
             self.questions_tfidf = self.vectorizer.fit_transform(self.questions)
         except Exception as e:
@@ -49,6 +48,6 @@ class SmallTalkHandler:
         best_match_index = np.argmax(similarity_scores)
         best_score = similarity_scores[best_match_index]
         if best_score >= threshold:
-            return self.answers[best_match_index]
+            return f"JOSEFINA: {self.answers[best_match_index]}"
         else:
             return None

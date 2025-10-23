@@ -27,9 +27,8 @@ class IntentClassifier:
     def _load_and_train(self, data_path):
         try:
             df = pd.read_csv(data_path)
-            self.intents = df['Intent'].tolist()
             self.phrases = [self._preprocess(p) for p in df['Phrase'].tolist()]
-
+            self.intents = df['Intent'].tolist()
             self.vectorizer = TfidfVectorizer(analyzer='word')
             self.intent_phrases_tfidf = self.vectorizer.fit_transform(self.phrases)
         except Exception as e:
@@ -42,16 +41,12 @@ class IntentClassifier:
         processed_query = self._preprocess(query)
         if not processed_query.strip():
             return "EmptyQuery", 0.0
-
         query_tfidf = self.vectorizer.transform([processed_query])
-         
         if query_tfidf.sum() == 0:
-            return "Unrecognised", 0.0
-             
+            return "Unrecognised", 0.0        
         similarity_scores = cosine_similarity(query_tfidf, self.intent_phrases_tfidf)[0]
         best_match_index = np.argmax(similarity_scores)
         best_score = similarity_scores[best_match_index]
-        
         if best_score >= threshold:
             return self.intents[best_match_index], best_score
         else:
