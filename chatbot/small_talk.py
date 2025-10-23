@@ -3,18 +3,17 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from nltk.stem import WordNetLemmatizer
+#from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 class SmallTalkHandler:
     def __init__(self, data_path="datasets/small_talk.csv"):
-        self.data_path = data_path
-        self.questions = []
-        self.answers = []
+        self.lemmatizer = WordNetLemmatizer()
         self.vectorizer = None
         self.questions_tfidf = None
-        self.lemmatizer = WordNetLemmatizer()
-        self._load_data()
-        self._train_model()
+        self.questions = []
+        self.answers = []
+        self._load_and_train(data_path)
         
     def _preprocess(self, text):
         text = text.lower()
@@ -25,29 +24,21 @@ class SmallTalkHandler:
                  lemmatized_tokens.append(self.lemmatizer.lemmatize(word))
         return ' '.join(lemmatized_tokens)
 
-    def _load_data(self):
-        full_path = self.data_path 
+    def _load_and_train(self, data_path):
         try:
-            df = pd.read_csv(full_path)        
-            if 'Question' not in df.columns or 'Answer' not in df.columns:
-                 print("Error: Check CSV")
-                 return  
+            df = pd.read_csv(full_path)
             self.questions = [self._preprocess(q) for q in df['Question'].tolist()]
             self.answers = df['Answer'].tolist()
-        except Exception as e:
-            print(f"An error occurred loading small talk data: {e}")
-            return
 
-    def _train_model(self):
-        if not self.questions:
-            print("Warning: No small talk questions loaded")
-            return   
-        self.vectorizer = TfidfVectorizer()
-        self.questions_tfidf = self.vectorizer.fit_transform(self.questions)
+            self.vectorizer = TfidfVectorizer(analyzer='word')
+            self.questions_tfidf = self.vectorizer.fit_transform(self.questions)
+        except Exception as e:
+            print(f"SYSTEM: Error loading small talk data: {e}")
+            self.vectorizer = None
 
     def get_small_talk_response(self, query, threshold):
         if self.questions_tfidf is None or self.vectorizer is None:
-            return "Sorry, the small talk module is not initialized correctly."
+            return None
         processed_query = self._preprocess(query)
         if not processed_query.strip():
             return None
