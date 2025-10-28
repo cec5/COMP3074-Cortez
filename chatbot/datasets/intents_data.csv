@@ -90,6 +90,7 @@ i am called jane,IdentityManagement
 you can call me alex,IdentityManagement
 people call me mike,IdentityManagement
 call me emily,IdentityManagement
+can you please call me,IdentityManagement
 you may call me chris,IdentityManagement
 the name is sophia,IdentityManagement
 who am i,IdentityManagement
@@ -105,6 +106,10 @@ forget my name,IdentityManagement
 change my name,IdentityManagement
 update my name,IdentityManagement
 record my name,IdentityManagement
+i want to change my name,IdentityManagement
+can you rename me,IdentityManagement
+you can update my name,IdentityManagement
+i want to update my name,IdentityManagement
 
 what is the date,QuestionAnswering
 what day is it,QuestionAnswering
