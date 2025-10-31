@@ -19,13 +19,13 @@ def process_user_query(query):
     intent, score = intent_classifier.classify(query, threshold=0.2)
 
     if intent == "SmallTalk":
-        return small_talk_handler.get_small_talk_response(query, threshold=0.2)     
+        return small_talk_handler.get_small_talk_response(query, threshold=0.4)     
     elif intent == "IdentityManagement":
         response, updated_name = identity_handler.get_identity_response(query, username, threshold=0.3)
         username = updated_name
         return response
     elif intent == "QuestionAnswering":
-        return qa_handler.get_QA_response(query, threshold=0.5)
+        return qa_handler.get_QA_response(query, threshold=0.65)
     elif intent == "Unrecognized":
         return "JOSEFINA: Forgive me, but I'm unable to recognize what you are saying." 
     else:

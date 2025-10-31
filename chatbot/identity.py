@@ -13,7 +13,7 @@ class IdentityManagement:
         self.questions_tfidf = None
         self.questions = []
         self.stopwords = set(stopwords.words('english'))
-        self.name_ignore = ["call","name","my","to","please","yes","is","i","am","know","who","tell","change","want","wish","rename","switch","update"]
+        self.name_ignore = ["call","name","my","to","please","yes","is","i","am","know","who","tell","change","want","wish","rename","switch","update","remember"]
         self.name_change = ["change","rename","switch","update","remove","forget","delete"]
         self._load_and_train(data_path)
 

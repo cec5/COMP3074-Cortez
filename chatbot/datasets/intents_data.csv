@@ -84,6 +84,7 @@ that was nice,SmallTalk
 this is fun,SmallTalk
 you are kind,SmallTalk
 i appreciate your help,SmallTalk
+what is your name,SmallTalk
 
 my name is john,IdentityManagement
 i am called jane,IdentityManagement
@@ -170,3 +171,4 @@ what are your thoughts on,QuestionAnswering
 how do you feel about,QuestionAnswering
 explain why,QuestionAnswering
 explain how,QuestionAnswering
+what does this do,QuestionAnswering
