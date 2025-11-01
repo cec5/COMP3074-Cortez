@@ -40,7 +40,7 @@ class IntentClassifier:
             return "SystemError", 0.0
         processed_query = self._preprocess(query)
         if not processed_query.strip():
-            return "EmptyQuery", 0.0
+            return "SystemError", 0.0
         query_tfidf = self.vectorizer.transform([processed_query])
         if query_tfidf.sum() == 0:
             return "Unrecognized", 0.0

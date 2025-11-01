@@ -10,31 +10,46 @@ class IdentityManagement:
     def __init__(self, data_path="datasets/identity.csv"):
         self.lemmatizer = WordNetLemmatizer()
         self.vectorizer = None
-        self.questions_tfidf = None
-        self.questions = []
+        self.intent_phrases_tfidf = None
+        self.phrases = []
+        self.intents = []
         self.stopwords = set(stopwords.words('english'))
         self.name_ignore = ["call","name","my","to","please","yes","is","i","am","know","who","tell","change","want","wish","rename","switch","update","remember"]
-        self.name_change = ["change","rename","switch","update","remove","forget","delete"]
         self._load_and_train(data_path)
 
     def _preprocess(self, text):
         text = text.lower()
         tokens = word_tokenize(text)
-        lemmatized_tokens = []
-        for word in tokens:
-            if word.isalnum():
-                lemmatized_tokens.append(self.lemmatizer.lemmatize(word))
+        lemmatized_tokens = [self.lemmatizer.lemmatize(word) for word in tokens if word.isalnum()]
         return ' '.join(lemmatized_tokens)
 
     def _load_and_train(self, data_path):
         try:
             df = pd.read_csv(data_path)
-            self.questions = [self._preprocess(q) for q in df['Question'].tolist()]
+            self.phrases = [self._preprocess(p) for p in df['Phrase'].tolist()]
+            self.intents = df['Intent'].tolist()
             self.vectorizer = TfidfVectorizer(analyzer='word')
-            self.questions_tfidf = self.vectorizer.fit_transform(self.questions)
+            self.intent_phrases_tfidf = self.vectorizer.fit_transform(self.phrases)
         except Exception as e:
             print(f"SYSTEM: Error loading identity dataset: {e}")
             self.vectorizer = None
+
+    def _classify(self, query, threshold):
+        if self.vectorizer is None:
+            return "SystemError", 0.0
+        processed_query = self._preprocess(query)
+        if not processed_query.strip():
+            return "EmptyQuery", 0.0
+        query_tfidf = self.vectorizer.transform([processed_query])
+        if query_tfidf.sum() == 0:
+            return "Unrecognized", 0.0
+        similarity_scores = cosine_similarity(query_tfidf, self.intent_phrases_tfidf)[0]
+        best_index = np.argmax(similarity_scores)
+        best_score = similarity_scores[best_index]
+        if best_score >= threshold:
+            return self.intents[best_index], best_score
+        else:
+            return "Unrecognized", best_score
 
     def _extract_possible_name(self, query):
         tokens = word_tokenize(query.lower())
@@ -42,40 +57,47 @@ class IdentityManagement:
         if not filtered:
             return None
         return filtered[-1].capitalize()
-
-    def get_identity_response(self, query, username, threshold=0.2):
-        if self.vectorizer is None:
-            return ("SYSTEM: Error with identity processing", username)
-
-        processed_query = self._preprocess(query)
-        if not processed_query.strip():
-            return ("JOSEFINA: Could you say that again?", username)
-
-        query_tfidf = self.vectorizer.transform([processed_query])
-        similarity_scores = cosine_similarity(query_tfidf, self.questions_tfidf)[0]
-        best_score = np.max(similarity_scores)
-
-        if any(word in processed_query for word in self.name_change):
-            if "forget" in processed_query or "remove" in processed_query or "delete" in processed_query:
-                if username:
-                    return (f"JOSEFINA: I've forgotten your name, {username}.", None)
-                else:
-                    return ("JOSEFINA: I don't think I know your name yet.", username)
-            else:
-                new_name = self._extract_possible_name(query)
-                if new_name:
-                    return (f"JOSEFINA: Sure, I'll now remember you as {new_name}.", new_name)
-                else:
-                    return ("JOSEFINA: What would you like me to call you instead?", username)
-
-        if any(word in processed_query for word in ["name", "call", "am"]):
-            new_name = self._extract_possible_name(query)
-            if new_name:
-                return (f"JOSEFINA: Got it! I'll remember you as {new_name}.", new_name)
     
-        if best_score >= threshold:
+    def _name_loop(self, intent):
+        # TODO set this up, but it's not crucial so it's on the backlog
+        # Similar to what you did for NameChange, but also called in cases where the user doesn't have a name (give them an option to set it)
+        pass
+
+    def get_identity_response(self, query, username, threshold=0.3):
+        query = query.strip()
+        intent, score = self._classify(query, threshold)
+
+        if intent == "Identification":
             if username:
                 return (f"JOSEFINA: You are {username}.", username)
             else:
-                return ("JOSEFINA: I don't think you've told me your name yet.", username)
-        return ("JOSEFINA: I'm not sure I understood that about your name.", username)
+                return ("JOSEFINA: I don’t think you’ve told me your name yet.", username)
+        elif intent == "NameDirect":
+            new_name = self._extract_possible_name(query)
+            if new_name:
+                return (f"JOSEFINA: Nice to meet you, {new_name}. I’ll remember you.", new_name)
+            else:
+                return ("JOSEFINA: I couldn't quite catch your name there.", username)
+        elif intent == "NameChange":
+            stop = False
+            print("JOSEFINA: Sure! Type in your name below!")
+            while not stop:
+                new_name = input().strip()
+                if new_name:
+                    if new_name == "CANCEL":
+                        return ("JOSEFINA: I've cancelled the current action, what now?", username)
+                    else:
+                        return (f"JOSEFINA: Got it, you are now {new_name}!", new_name)
+                else:
+                    print("JOSEFINA: I didn't quite get that, please type your name below!")
+        elif intent == "NameDelete":
+            if username:
+                return (f"JOSEFINA: I’ve forgotten your name, {username}.", None)
+            else:
+                return ("JOSEFINA: I don’t think I know your name yet.", username)
+        elif intent == "Unrecognized":
+            return ("JOSEFINA: I’m not sure what you mean about your name.", username)
+        elif intent == "SystemError":
+            return ("SYSTEM: Error in identity processing.", username)
+        else:
+            return ("JOSEFINA: I’m not sure how to handle that request about your name.", username)

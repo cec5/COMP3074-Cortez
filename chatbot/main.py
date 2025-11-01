@@ -33,7 +33,7 @@ def process_user_query(query):
 
 def main():
     global username
-    print("SYSTEM: Type 'STOP' or 'QUIT' to quit")
+    print("SYSTEM: Type 'STOP' or 'QUIT' to quit, type 'CANCEL' to cancel an active action/dialouge")
     print("JOSEFINA: Hello! I am Josefina, let's chat!")
     stop = False
     while not stop:

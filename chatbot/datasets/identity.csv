@@ -1,11 +1,54 @@
-Question
-what is my name
-do you remember my name
-do you know my name
-tell me my name
-tell me what i am called
-what am i called
-who am i
-tell me who am i
-call me
-call me by my name
+Phrase,Intent
+what is my name,Identification
+do you remember my name,Identification
+do you remember me,Identification
+do you know my name,Identification
+tell me my name,Identification
+tell me what i am called,Identification
+what am i called,Identification
+who am i,Identification
+tell me who am i,Identification
+call me by my name,Identification
+
+update my name,NameChange
+change my name,NameChange
+switch my name,NameChange
+rename me,NameChange
+can you change my name,NameChange
+can you update my name,NameChange
+can you switch my name,NameChange
+can you rename me,NameChange
+let us change my name,NameChange
+let us update my name,NameChange
+let us switch my name,NameChange
+i want to update my name,NameChange
+i want to change my name,NameChange
+i want to switch my name,NameChange
+i want to to be renamed,NameChange
+can you set my name,NameChange
+i want to be named,NameChange
+can you add my name,NameChange
+name me,NameChange
+record my name,NameChange
+
+my name is,NameDirect
+i am called,NameDirect
+you can call me,NameDirect
+people call me,NameDirect
+call me,NameDirect
+can you please call me,NameDirect
+you may call me,NameDirect
+the name is,NameDirect
+i am,NameDirect
+
+forget my name,NameDelete
+delete my name,NameDelete
+remove my name,NameDelete
+forget me,NameDelete
+can you forget my name,NameDelete
+can you delete my name,NameDelete
+can you remove my name,NameDelete
+i want you to forget my name,NameDelete
+i want you to delete my name,NameDelete
+i want you to remove my name,NameDelete
+i want you to forget me,NameDelete
