@@ -73,7 +73,7 @@ class IdentityManagement:
     def _ask_user_for_name(self, username, stop=False, i=0):
         print("JOSEFINA: I don't think you've told me your name yet, would you like to set it?")
         while not stop and i < 2:
-            response = input("USER: ").strip()
+            response = input(f"{username}: ").strip()
             if response == "CANCEL":
                 return ("JOSEFINA: I've cancelled the current action, what now?", username)
             elif any(word in response.lower() for word in ["yes","ok","alright"]):
