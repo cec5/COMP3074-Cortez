@@ -58,10 +58,33 @@ class IdentityManagement:
             return None
         return filtered[-1].capitalize()
     
-    def _name_loop(self, intent):
-        # TODO set this up, but it's not crucial so it's on the backlog
-        # Similar to what you did for NameChange, but also called in cases where the user doesn't have a name (give them an option to set it)
-        pass
+    def _name_loop(self, username, stop=False):
+        print("JOSEFINA: Very well! Type in your name below!")
+        while not stop:
+            new_name = input().strip()
+            if new_name:
+                if new_name == "CANCEL":
+                    return ("JOSEFINA: I've cancelled the current action, what now?", username)
+                else:
+                    return (f"JOSEFINA: Got it, you are {new_name}!", new_name)
+            else:
+                print("JOSEFINA: I didn't quite get that, please type your name below!")
+
+    def _ask_user_for_name(self, username, stop=False, i=0):
+        print("JOSEFINA: I don't think you've told me your name yet, would you like to set it?")
+        while not stop and i < 2:
+            response = input("USER: ").strip()
+            if response == "CANCEL":
+                return ("JOSEFINA: I've cancelled the current action, what now?", username)
+            elif any(word in response.lower() for word in ["yes","ok","alright"]):
+                return self._name_loop(username)
+            elif "no" in response.lower():
+                return ("JOSEFINA: Alright then!", username)
+            else:
+                i += 1
+                if i < 2: print("JOSEFINA: I couldn't understand your reply, can you try again?")
+        else:
+            return ("JOSEFINA: I still can't understand your reply, let's move on.", username)
 
     def get_identity_response(self, query, username, threshold=0.3):
         query = query.strip()
@@ -71,7 +94,7 @@ class IdentityManagement:
             if username:
                 return (f"JOSEFINA: You are {username}.", username)
             else:
-                return ("JOSEFINA: I don’t think you’ve told me your name yet.", username)
+                return self._ask_user_for_name(username)
         elif intent == "NameDirect":
             new_name = self._extract_possible_name(query)
             if new_name:
@@ -79,17 +102,7 @@ class IdentityManagement:
             else:
                 return ("JOSEFINA: I couldn't quite catch your name there.", username)
         elif intent == "NameChange":
-            stop = False
-            print("JOSEFINA: Sure! Type in your name below!")
-            while not stop:
-                new_name = input().strip()
-                if new_name:
-                    if new_name == "CANCEL":
-                        return ("JOSEFINA: I've cancelled the current action, what now?", username)
-                    else:
-                        return (f"JOSEFINA: Got it, you are now {new_name}!", new_name)
-                else:
-                    print("JOSEFINA: I didn't quite get that, please type your name below!")
+            return self._name_loop(username)
         elif intent == "NameDelete":
             if username:
                 return (f"JOSEFINA: I’ve forgotten your name, {username}.", None)
