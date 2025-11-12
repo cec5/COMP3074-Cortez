@@ -61,59 +61,49 @@ class IdentityManagement:
             return None
         return filtered[-1].capitalize()
     
-    def _name_loop(self, username, stop=False):
-        print("[MAILA]: Very well! Type in your name below!")
-        while not stop:
-            new_name = input().strip()
-            if new_name:
-                if new_name == "CANCEL":
-                    return ("[MAILA]: I've cancelled the current action, what now?", username)
-                else:
-                    return (f"[MAILA]: Got it, you are {new_name}!", new_name)
-            else:
-                print("[MAILA]: I didn't quite get that, please type your name below!")
-
-    def _ask_user_for_name(self, username, stop=False, i=0):
-        print("[MAILA]: I don't think you've told me your name yet, would you like to set it?")
-        while not stop and i < 2:
-            response = input("[USER]: ").strip()
-            if response == "CANCEL":
-                return ("[MAILA]: I've cancelled the current action, what now?", username)
-            elif any(word in response.lower() for word in ["yes","ok","alright"]):
-                return self._name_loop(username)
-            elif "no" in response.lower():
-                return ("[MAILA]: Alright then!", username)
-            else:
-                i += 1
-                if i < 2: print("[MAILA]: I couldn't understand your reply, can you try again?")
-        else:
-            return ("[MAILA]: I still can't understand your reply, let's move on.", username)
-
-    def get_identity_response(self, query, username, threshold=0.3):
+    def get_identity_response(self, query, username, threshold=0.3, current_state="normal"):
         query = query.strip()
+        if current_state == "awaiting_name_confirm":
+            if "cancel" in query.lower():
+                return ("I've cancelled the current action, what now?", username, "normal")
+            elif any(word in query.lower() for word in ["yes","ok","alright"]):
+                return ("Very well! Type in only your name below!", username, "awaiting_name")
+            elif "no" in query.lower():
+                return ("Alright then!", username, "normal")
+            else:
+                return ("I couldn't understand your reply, can you try again? (Yes/No/Cancel)", username, "awaiting_name_confirm")
+        if current_state == "awaiting_name":
+            if query.lower() == "cancel":
+                return ("I've cancelled the current action, what now?", username, "normal")
+            if query:
+                new_name = query.strip().capitalize()
+                return (f"Got it, you are {new_name}!", new_name, "normal")
+            else:
+                return ("I didn't quite get that, please type your name below!", username, "awaiting_name")
+        
         intent, score = self._classify(query, threshold)
 
         if intent == "Identification":
             if username:
-                return (f"[MAILA]: You are {username}.", username)
+                return (f"You are {username}.", username, "normal")
             else:
-                return self._ask_user_for_name(username)
+                return ("I don't think you've told me your name yet, would you like to set it?", username, "awaiting_name_confirm")
         elif intent == "NameDirect":
             new_name = self._extract_possible_name(query)
             if new_name:
-                return (f"[MAILA]: Nice to meet you, {new_name}. I’ll remember you.", new_name)
+                return (f"Nice to meet you, {new_name}. I’ll remember you.", new_name, "normal")
             else:
-                return ("[MAILA]: I couldn't quite catch your name there.", username)
+                return ("I couldn't quite catch your name there.", username, "normal")
         elif intent == "NameChange":
-            return self._name_loop(username)
+            return ("Very well! Type in your name below!", username, "awaiting_name")
         elif intent == "NameDelete":
             if username:
-                return (f"[MAILA]: I’ve forgotten your name, {username}.", None)
+                return (f"I’ve forgotten your name, {username}.", None, "normal")
             else:
-                return ("[MAILA]: I don’t think I know your name yet.", username)
+                return ("I don’t think I know your name yet.", username, "normal")
         elif intent == "Unrecognized":
-            return ("[MAILA]: I’m not sure what you mean about your name.", username)
+            return ("I’m not sure what you mean about your name.", username, "normal")
         elif intent == "SystemError":
-            return ("[SYSTEM ERROR]: Error in identity processing.", username)
+            return ("[SYSTEM ERROR]: Error in identity processing.", username, "normal")
         else:
-            return ("[MAILA]: I’m not sure how to handle that request about your name.", username)
+            return ("I’m not sure how to handle that request about your name.", username, "normal")

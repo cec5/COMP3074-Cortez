@@ -48,6 +48,6 @@ class SmallTalkHandler:
         best_match_index = np.argmax(similarity_scores)
         best_score = similarity_scores[best_match_index]
         if best_score >= threshold:
-            return f"[MAILA]: {self.answers[best_match_index]}"
+            return f"{self.answers[best_match_index]}"
         else:
             return "[SYSTEM ERROR]: Error with small talk processing"

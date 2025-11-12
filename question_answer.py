@@ -43,11 +43,11 @@ class QAHandler:
             return "[SYSTEM ERROR]: Error with QA processing"
         query_tfidf = self.vectorizer.transform([processed_query])
         if query_tfidf.sum() == 0:
-            return "[MAILA]: I'm afraid I don't have the answer to that."
+            return "I'm afraid I don't have the answer to that."
         similarity_scores = cosine_similarity(query_tfidf, self.questions_tfidf)[0]
         best_match_index = np.argmax(similarity_scores)
         best_score = similarity_scores[best_match_index]
         if best_score >= threshold:
-            return f"[MAILA]: {self.answers[best_match_index]}"
+            return f"{self.answers[best_match_index]}"
         else:
-            return "[MAILA]: I'm afraid I don't have the answer to that."
+            return "I'm afraid I don't have the answer to that."
