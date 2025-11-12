@@ -1,10 +1,14 @@
 import pandas as pd
 import numpy as np
+import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from nltk.stem import WordNetLemmatizer
+from nltk.corpus import wordnet
 #from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+
+pos_map = {'ADJ': 'a', 'ADV': 'r', 'NOUN': 'n', 'VERB': 'v'}
 
 class QAHandler:
     def __init__(self, data_path="datasets/question_answer.csv"):
@@ -16,13 +20,9 @@ class QAHandler:
         self._load_and_train(data_path)
         
     def _preprocess(self, text):
-        text = text.lower()
-        tokens = word_tokenize(text)
-        lemmatized_tokens = []
-        for word in tokens:
-            if word.isalnum():
-                 lemmatized_tokens.append(self.lemmatizer.lemmatize(word))
-        return ' '.join(lemmatized_tokens)
+        tokens = nltk.word_tokenize(text.lower())
+        tagged = nltk.pos_tag(tokens, tagset='universal')
+        return ' '.join(self.lemmatizer.lemmatize(w, pos=pos_map.get(t, 'n')) for w, t in tagged if w.isalnum())
 
     def _load_and_train(self, data_path):
         try:
