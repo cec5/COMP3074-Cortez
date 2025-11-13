@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import nltk
+import random
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from nltk.stem import WordNetLemmatizer
@@ -48,6 +49,7 @@ class SmallTalkHandler:
         best_match_index = np.argmax(similarity_scores)
         best_score = similarity_scores[best_match_index]
         if best_score >= threshold:
-            return f"{self.answers[best_match_index]}"
+            responses = [r.strip() for r in self.answers[best_match_index].split("|")]
+            return random.choice(responses)
         else:
             return "[SYSTEM ERROR]: Error with small talk processing"

@@ -97,11 +97,11 @@ class ChatbotGUI:
             name = self.username.upper() if self.username else "YOU"
             self.chat_history.insert(tk.END, f"{name}\n", "user_name")
             self.chat_history.insert(tk.END, f"{message}\n", "user_bubble")
-            self.chat_history.insert(tk.END, f"{timestamp}\n\n", "timestamp_right")
+            self.chat_history.insert(tk.END, f"{timestamp}\n", "timestamp_right")
         else:
             self.chat_history.insert(tk.END, "MAILA\n", "bot_name")
             self.chat_history.insert(tk.END, f"{message}\n", "bot_bubble")
-            self.chat_history.insert(tk.END, f"{timestamp}\n\n", "timestamp_left")
+            self.chat_history.insert(tk.END, f"{timestamp}\n", "timestamp_left")
         self.chat_history.config(state=tk.DISABLED)
         self.chat_history.see(tk.END)
 
