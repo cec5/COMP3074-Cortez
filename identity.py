@@ -68,7 +68,7 @@ class IdentityManagement:
                 return ("I've cancelled the current action, what now?", username, "normal")
             elif any(word in query.lower() for word in ["yes","ok","alright"]):
                 return ("Very well! Type in only your name below!", username, "awaiting_name")
-            elif "no" in query.lower():
+            elif any(word in query.lower() for word in ["no","nevermind"]):
                 return ("Alright then!", username, "normal")
             else:
                 return ("I couldn't understand your reply, can you try again? (Yes/No/Cancel)", username, "awaiting_name_confirm")

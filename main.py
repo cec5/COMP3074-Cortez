@@ -6,6 +6,7 @@ from intent_classifier import IntentClassifier
 from small_talk import SmallTalkHandler
 from question_answer import QAHandler
 from identity import IdentityManagement
+from discoverability import Discoverability
 
 BG_COLOR = "#ece5dd"
 CHAT_BG = "#ffffff"
@@ -30,6 +31,7 @@ class ChatbotGUI:
         self.small_talk_handler = SmallTalkHandler()
         self.qa_handler = QAHandler()
         self.identity_handler = IdentityManagement()
+        self.discoverability_handler = Discoverability()
         self.create_widgets()
         self.add_chat_message("Hello! I am Maila, let's chat!", "bot")
 
@@ -111,9 +113,17 @@ class ChatbotGUI:
             self.username = new_name
             self.chat_state = new_state
             response = response_text
+        elif self.chat_state in ["general_help_loop", "capabilities_help"]:
+            response_text, new_state = self.discoverability_handler.get_discoverability_response(query, current_state=self.chat_state)
+            self.chat_state = new_state
+            response = response_text
         else:
             intent, score = self.intent_classifier.classify(query, threshold=0.2)
-            if intent == "SmallTalk":
+            if query.lower() == "where am i" or query.lower() == "where am i?":
+                response = "The chatbot is currently in a normal state, there is no ongoing action."
+            elif query.lower() == "cancel":
+                response = "There is no ongoing action to cancel."
+            elif intent == "SmallTalk":
                 response = self.small_talk_handler.get_small_talk_response(query, threshold=0.4)
             elif intent == "IdentityManagement":
                 response_text, new_name, new_state = self.identity_handler.get_identity_response(query, self.username, threshold=0.3, current_state="normal")
@@ -122,6 +132,10 @@ class ChatbotGUI:
                 response = response_text
             elif intent == "QuestionAnswering":
                 response = self.qa_handler.get_QA_response(query, threshold=0.65)
+            elif intent == "Discoverability":
+                response_text, new_state = self.discoverability_handler.get_discoverability_response(query, threshold=0.3, current_state="normal")
+                self.chat_state = new_state
+                response = response_text
             elif intent == "Unrecognized":
                 response = "Forgive me, but I'm unable to recognize what you are saying."
             else:

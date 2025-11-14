@@ -61,13 +61,6 @@ what are you,SmallTalk
 who are you,SmallTalk
 what can you do,SmallTalk
 what can i do,SmallTalk
-can you help,SmallTalk
-can you help me,SmallTalk
-i need help,SmallTalk
-i need assistance,SmallTalk
-i am lost,SmallTalk
-help,SmallTalk
-please help me,SmallTalk
 i feel lonely,SmallTalk
 i feel great today,SmallTalk
 you are funny,SmallTalk
@@ -170,6 +163,10 @@ do you know who i am,IdentityManagement
 i told you my name,IdentityManagement
 let me tell you my name,IdentityManagement
 remember my name is ben,IdentityManagement
+i would like to set my name,IdentityManagement
+i want to set my name,IdentityManagement
+can you set my name,IdentityManagement
+please set my name,IdentityManagement
 forget my name,IdentityManagement
 change my name,IdentityManagement
 update my name,IdentityManagement
@@ -239,3 +236,51 @@ how do you feel about,QuestionAnswering
 explain why,QuestionAnswering
 explain how,QuestionAnswering
 what does this do,QuestionAnswering
+
+can you help,Discoverability
+can you help me,Discoverability
+i need help,Discoverability
+i need assistance,Discoverability
+i do not understand,Discoverability
+i do not understand what to do,Discoverability
+i am lost,Discoverability
+help,Discoverability
+please help me,Discoverability
+i would like help,Discoverability
+i need some help,Discoverability
+could you help me out,Discoverability
+i am confused,Discoverability
+i dont understand,Discoverability
+show me what to do,Discoverability
+i need guidance,Discoverability
+can you guide me,Discoverability
+i need support,Discoverability
+im having trouble,Discoverability
+walk me through this,Discoverability
+how do i do this,Discoverability
+what commands can i use,Discoverability
+tell me about commands,Discoverability
+can you tell me about commands,Discoverability
+what are the commands,Discoverability
+i need help with commands,Discoverability
+can you help me with commands,Discoverability
+tell me your commands,Discoverability
+list commands,Discoverability
+show commands,Discoverability
+what are the available commands,Discoverability
+command help,Discoverability
+how do i use commands,Discoverability
+i need help with my name,Identification
+i need help with identification
+what can you do,Discoverability
+what can we do,Discoverability
+what can i do,Discoverability
+what are your capabilities,Discoverability
+what are you capable of,Discoverability
+tell me what you can do,Discoverability
+show me your abilities,Discoverability
+explain your capabilities,Discoverability
+what functions do you have,Discoverability
+how can you help me,Discoverability
+what is your purpose,Discoverability
+describe your abilities,Discoverability
