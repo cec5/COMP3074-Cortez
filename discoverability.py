@@ -74,7 +74,7 @@ class Discoverability:
         elif current_state == "capabilities_help":
             if "cancel" in query.lower():
                 return ("I've cancelled the current action, what now?", "normal")
-            elif query.lower == "where am i" or query.lower == "where am i?":
+            elif query.lower() == "where am i" or query.lower() == "where am i?":
                 return ("You are currently in the capabilities help menu. You can ask me for further information about my capabilties.", "capabilities_help")
             elif any(word in query.lower() for word in ["no","nevermind"]):
                 return ("Alright then, let's move on!", "normal")
