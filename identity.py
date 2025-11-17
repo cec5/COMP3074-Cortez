@@ -67,7 +67,7 @@ class IdentityManagement:
             if "cancel" in query.lower():
                 return ("I've cancelled the current action, what now?", username, "normal")
             elif any(word in query.lower() for word in ["yes","ok","alright"]):
-                return ("Very well! Type in only your name below!", username, "awaiting_name")
+                return ("Very well! Simply tell me your name please!", username, "awaiting_name")
             elif any(word in query.lower() for word in ["no","nevermind"]):
                 return ("Alright then!", username, "normal")
             else:
@@ -75,11 +75,11 @@ class IdentityManagement:
         if current_state == "awaiting_name":
             if query.lower() == "cancel":
                 return ("I've cancelled the current action, what now?", username, "normal")
-            if query:
+            elif query:
                 new_name = query.strip().capitalize()
                 return (f"Got it, you are {new_name}!", new_name, "normal")
             else:
-                return ("I didn't quite get that, please type your name below!", username, "awaiting_name")
+                return ("I didn't quite get that, please type in your name below!", username, "awaiting_name")
         
         intent, score = self._classify(query, threshold)
 
@@ -90,7 +90,9 @@ class IdentityManagement:
                 return ("I don't think you've told me your name yet, would you like to set it?", username, "awaiting_name_confirm")
         elif intent == "NameDirect":
             new_name = self._extract_possible_name(query)
-            if new_name:
+            if new_name and username:
+                return (f"{username}, you want to be called {new_name} now? Very well!", new_name, "normal")
+            elif new_name:
                 return (f"Nice to meet you, {new_name}. I’ll remember you.", new_name, "normal")
             else:
                 return ("I couldn't quite catch your name there.", username, "normal")

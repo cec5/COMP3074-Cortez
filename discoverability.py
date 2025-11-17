@@ -62,13 +62,15 @@ class Discoverability:
             elif query.lower() == "where am i" or query.lower() == "where am i?":
                 return ("You are currently in the general help menu. You can elaborate further or cancel the action.", "general_help_loop")
             elif any(word in query.lower() for word in ["no","nevermind"]):
-                return ("Alright then, let's move on!", "normal")
+                return ("Very well.", "normal")
             elif any(word in query.lower() for word in ["commands","command"]):
                 intent = "HelpCommands"
             elif any(word in query.lower() for word in ["identification","name","identity"]):
                 intent = "Identification"
             elif any(word in query.lower() for word in ["capable","capabilities","do"]):
                 intent = "Capabilities"
+            elif any(word in query.lower() for word in ["yes", "affirmative"]):
+                return ("I can certaintly tell you more, just specifiy what you would me to elaborate on! Commands, identification, or my capabilities?", "general_help_loop")
             else:
                 return ("I couldn't understand your reply, can you try again?", "general_help_loop")
         elif current_state == "capabilities_help":
@@ -77,7 +79,7 @@ class Discoverability:
             elif query.lower() == "where am i" or query.lower() == "where am i?":
                 return ("You are currently in the capabilities help menu. You can ask me for further information about my capabilties.", "capabilities_help")
             elif any(word in query.lower() for word in ["no","nevermind"]):
-                return ("Alright then, let's move on!", "normal")
+                return ("Very well.", "normal")
             elif any(word in query.lower() for word in ["yes","ok","alright"]):
                 return ("Alright, ask me about small talk, question and answering, identification, or email services for more information.", "capabilities_help")
             elif any(word in query.lower() for word in ["small","talk","talking","conversation","chat","chatting"]):
@@ -92,13 +94,15 @@ class Discoverability:
                 return ("I couldn't understand your reply, can you try again?", "capabilities_help")
 
         if intent == "HelpGeneral":
-            return ("What do you need help with? Would you like further information on commands, identification, or my capabilities?", "general_help_loop")
+            return ("What do you need help with? Would you like any further information on commands, identification, or my capabilities?", "general_help_loop")
         if intent == "HelpCommands":
-            return ("I have two universal commands:\nCANCEL: cancels any ongoing action\nWHERE AM I: tells you what state the chatbot current is in", "normal")
+            return ("I have two universal commands:\nCANCEL: cancels any ongoing action\nWHERE AM I: tells you what state the chatbot current is in.", "normal")
         elif intent == "Identification":
             return ("If you tell me your name or tell me that you want to set your name, I am capable of remembering it. You can also change your name, or tell me to forget it entirely.", "normal")
         elif intent == "Capabilities":
             return ("I am capable of basic small talk, question and answering, identity management, and generating you a temporary email, would you like any further information on any of these?", "capabilities_help")
+        elif intent == "Purpose":
+            return ("I am Maila, an AI-powered Chatbot designed for a class at the University of Nottingham. I am designed to assist you with setting up a temporarily email address in an conversational manner.", "normal")
         elif intent == "SystemError":
             return ("[SYSTEM ERROR]: Error in discoverability processing.", "normal")
         else:

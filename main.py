@@ -124,7 +124,12 @@ class ChatbotGUI:
             elif query.lower() == "cancel":
                 response = "There is no ongoing action to cancel."
             elif intent == "SmallTalk":
-                response = self.small_talk_handler.get_small_talk_response(query, threshold=0.4)
+                raw_response = self.small_talk_handler.get_small_talk_response(query, threshold=0.4)
+                if "{username}" in raw_response:
+                    name_to_insert = self.username if self.username else "friend"
+                    response = raw_response.replace("{username}", name_to_insert)
+                else:
+                    response = raw_response
             elif intent == "IdentityManagement":
                 response_text, new_name, new_state = self.identity_handler.get_identity_response(query, self.username, threshold=0.3, current_state="normal")
                 self.username = new_name

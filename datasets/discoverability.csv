@@ -21,12 +21,13 @@ how do i do this,HelpGeneral
 
 what commands can i use,HelpCommands
 can you tell me the commands,HelpCommands
-tell me about commands,Discoverability
-can you tell me about commands,Discoverability
+tell me about commands,HelpCommands
+can you tell me about commands,HelpCommands
 what are the commands,HelpCommands
 tell me your commands,HelpCommands
 list commands,HelpCommands
 show commands,HelpCommands
+commands,HelpCommands
 what are the available commands,HelpCommands
 command help,HelpCommands
 how do i use commands,HelpCommands
@@ -36,6 +37,9 @@ i need help with my name,Identification
 i need help with identification,Identification
 help me with my name,Identification
 help me with identification,Identification
+tell me how to set my name,Identification
+tell me about identification,Identification
+explain to me about identification,Identification
 
 what can you do,Capabilities
 what can we do,Capabilities
@@ -47,5 +51,11 @@ show me your abilities,Capabilities
 explain your capabilities,Capabilities
 what functions do you have,Capabilities
 how can you help me,Capabilities
-what is your purpose,Capabilities
 describe your abilities,Capabilities
+
+what is your purpose,Purpose
+tell me your purpose,Purpose
+explain your purpose,purpose
+what is the point of you,Purpose
+what is the point of your existence,Purpose
+tell me about yourself,Purpose
