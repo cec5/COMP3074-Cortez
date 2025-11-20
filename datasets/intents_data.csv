@@ -1,298 +1,318 @@
-Phrase,Intent
-hello,SmallTalk
-hi,SmallTalk
-hey,SmallTalk
-hi there,SmallTalk
-hey there,SmallTalk
-greetings,SmallTalk
-good morning,SmallTalk
-good afternoon,SmallTalk
-good evening,SmallTalk
-how are you,SmallTalk
-how are you doing,SmallTalk
-how have you been,SmallTalk
-how is it going,SmallTalk
-what is up,SmallTalk
-what are you doing,SmallTalk
-how is everything,SmallTalk
-how is life,SmallTalk
-how are things,SmallTalk
-it is good,SmallTalk
-it is bad,SmallTalk
-i am good,SmallTalk
-i am doing good,SmallTalk
-i am well,SmallTalk
-i am fine,SmallTalk
-i am sad,SmallTalk
-i am bored,SmallTalk
-i am happy,SmallTalk
-i am tired,SmallTalk
-i am okay,SmallTalk
-i am ok,SmallTalk
-i feel great,SmallTalk
-i feel down,SmallTalk
-i am doing bad,SmallTalk
-not much,SmallTalk
-nothing much,SmallTalk
-same as always,SmallTalk
-just chilling,SmallTalk
-thank,SmallTalk
-thanks,SmallTalk
-thank you,SmallTalk
-thank you so much,SmallTalk
-appreciate it,SmallTalk
-thanks a lot,SmallTalk
-no problem,SmallTalk
-you are welcome,SmallTalk
-nice to meet you,SmallTalk
-pleased to meet you,SmallTalk
-happy to meet you,SmallTalk
-it is nice talking to you,SmallTalk
-goodbye,SmallTalk
-bye,SmallTalk
-see you later,SmallTalk
-talk to you later,SmallTalk
-later,SmallTalk
-take care,SmallTalk
-have a nice day,SmallTalk
-have a good day,SmallTalk
-see you soon,SmallTalk
-what are you,SmallTalk
-who are you,SmallTalk
-what can you do,SmallTalk
-what can i do,SmallTalk
-i feel lonely,SmallTalk
-i feel great today,SmallTalk
-you are funny,SmallTalk
-you are nice,SmallTalk
-you are friendly,SmallTalk
-that is cool,SmallTalk
-that is nice,SmallTalk
-that is great,SmallTalk
-you are awesome,SmallTalk
-thank you for helping me,SmallTalk
-it is nice chatting with you,SmallTalk
-i am talking to you,SmallTalk
-i like talking to you,SmallTalk
-i am glad we are chatting,SmallTalk
-i enjoy chatting with you,SmallTalk
-that was nice,SmallTalk
-this is fun,SmallTalk
-you are kind,SmallTalk
-i appreciate your help,SmallTalk
-what is your name,SmallTalk
-good night,SmallTalk
-sweet dreams,SmallTalk
-how do you do,SmallTalk
-hey maila,SmallTalk
-hi maila,SmallTalk
-maila,SmallTalk
-hello maila,SmallTalk
-yo,SmallTalk
-sup,SmallTalk
-long time no see,SmallTalk
-nice to see you,SmallTalk
-how is your day,SmallTalk
-how is your morning,SmallTalk
-how is your afternoon,SmallTalk
-how is your evening,SmallTalk
-good to see you,SmallTalk
-how are you feeling,SmallTalk
-are you alright,SmallTalk
-are you okay,SmallTalk
-good to hear from you,SmallTalk
-nice talking to you,SmallTalk
-yo,SmallTalk
-sup,SmallTalk
-whats up,SmallTalk
-whats going on,SmallTalk
-whats happening,SmallTalk
-whats new,SmallTalk
-howdy,SmallTalk
-hiya,SmallTalk
-yo maila,SmallTalk
-hello again,SmallTalk
-good night,SmallTalk
-sweet dreams,SmallTalk
-how do you do,SmallTalk
-long time no see,SmallTalk
-nice to see you,SmallTalk
-good to see you,SmallTalk
-how is your day,SmallTalk
-how is your morning,SmallTalk
-how is your afternoon,SmallTalk
-how is your evening,SmallTalk
-good to hear from you,SmallTalk
-nice talking to you,SmallTalk
-are you okay,SmallTalk
-are you alright,SmallTalk
-you good,SmallTalk
-you ok,SmallTalk
-im back,SmallTalk
-i am here,SmallTalk
-im lonely,SmallTalk
-feeling lonely,SmallTalk
-i feel anxious,SmallTalk
-im stressed,SmallTalk
-i feel overwhelmed,SmallTalk
-i am depressed,SmallTalk
-i am frustrated,SmallTalk
-im nervous,SmallTalk
-i am nervous,SmallTalk
-make me laugh,SmallTalk
-say something,SmallTalk
-lets talk,SmallTalk
-can we chat,SmallTalk
-talk to me,SmallTalk
-talk with me,SmallTalk
+Phrase,Intent,Subintent
 
-my name is john,IdentityManagement
-i am called jane,IdentityManagement
-you can call me alex,IdentityManagement
-people call me mike,IdentityManagement
-call me emily,IdentityManagement
-can you please call me,IdentityManagement
-you may call me chris,IdentityManagement
-the name is sophia,IdentityManagement
-who am i,IdentityManagement
-what is my name,IdentityManagement
-do you remember my name,IdentityManagement
-can you remember who i am,IdentityManagement
-do you know my name,IdentityManagement
-do you know who i am,IdentityManagement
-i told you my name,IdentityManagement
-let me tell you my name,IdentityManagement
-remember my name is ben,IdentityManagement
-i would like to set my name,IdentityManagement
-i want to set my name,IdentityManagement
-can you set my name,IdentityManagement
-please set my name,IdentityManagement
-forget my name,IdentityManagement
-change my name,IdentityManagement
-update my name,IdentityManagement
-record my name,IdentityManagement
-i want to change my name,IdentityManagement
-can you rename me,IdentityManagement
-you can update my name,IdentityManagement
-i want to update my name,IdentityManagement
+"can you help",Discoverability,HelpGeneral
+"can you help me",Discoverability,HelpGeneral
+"could you help me out",Discoverability,HelpGeneral
+"help",Discoverability,HelpGeneral
+"how do i do this",Discoverability,HelpGeneral
+"i am confused",Discoverability,HelpGeneral
+"i am lost",Discoverability,HelpGeneral
+"i dont understand",Discoverability,HelpGeneral
+"i need assistance",Discoverability,HelpGeneral
+"i need guidance",Discoverability,HelpGeneral
+"i need help",Discoverability,HelpGeneral
+"i need some help",Discoverability,HelpGeneral
+"i need support",Discoverability,HelpGeneral
+"i would like help",Discoverability,HelpGeneral
+"im having trouble",Discoverability,HelpGeneral
+"please help me",Discoverability,HelpGeneral
+"show me what to do",Discoverability,HelpGeneral
+"walk me through this",Discoverability,HelpGeneral
+"command help",Discoverability,HelpCommands
+"commands",Discoverability,HelpCommands
+"how do i use commands",Discoverability,HelpCommands
+"i need help with commands",Discoverability,HelpCommands
+"list commands",Discoverability,HelpCommands
+"show commands",Discoverability,HelpCommands
+"tell me about commands",Discoverability,HelpCommands
+"tell me your commands",Discoverability,HelpCommands
+"what are the available commands",Discoverability,HelpCommands
+"what are the commands",Discoverability,HelpCommands
+"what commands can i use",Discoverability,HelpCommands
+"can you tell me the commands",Discoverability,HelpCommands
+"can you tell me about commands",Discoverability,HelpCommands
+"describe your abilities",Discoverability,Capabilities
+"explain to me your capabilities",Discoverability,Capabilities
+"explain your capabilities",Discoverability,Capabilities
+"how can you help me",Discoverability,Capabilities
+"show me your abilities",Discoverability,Capabilities
+"tell me what you can do",Discoverability,Capabilities
+"what are you capable of",Discoverability,Capabilities
+"what are your capabilities",Discoverability,Capabilities
+"what can i do",Discoverability,Capabilities
+"what can you do",Discoverability,Capabilities
+"what can we do",Discoverability,Capabilities
+"what functions do you have",Discoverability,Capabilities
+"explain to me about identification",Discoverability,Identification
+"help me with identification",Discoverability,Identification
+"help me with my name",Discoverability,Identification
+"i need help with identification",Discoverability,Identification
+"i need help with my name",Discoverability,Identification
+"tell me about identification",Discoverability,Identification
+"tell me how to set my name",Discoverability,Identification
+"explain to me your purpose",Discoverability,Purpose
+"explain your purpose",Discoverability,Purpose
+"tell me about yourself",Discoverability,Purpose
+"tell me your purpose",Discoverability,Purpose
+"what is the point of you",Discoverability,Purpose
+"what is the point of your existence",Discoverability,Purpose
+"what is your purpose",Discoverability,Purpose
 
-what is the date,QuestionAnswering
-what day is it,QuestionAnswering
-what is the current time,QuestionAnswering
-what time is it,QuestionAnswering
-what is today’s date,QuestionAnswering
-what is today,QuestionAnswering
-tell me about,QuestionAnswering
-tell me something about,QuestionAnswering
-can you tell me about,QuestionAnswering
-i want to know about,QuestionAnswering
-do you know about,QuestionAnswering
-what do you know about,QuestionAnswering
-what do you know about this,QuestionAnswering
-explain to me about,QuestionAnswering
-give me details about,QuestionAnswering
-who is the leader of,QuestionAnswering
-who is the president of,QuestionAnswering
-who is the prime minister of,QuestionAnswering
-who invented the,QuestionAnswering
-who discovered the,QuestionAnswering
-who made the,QuestionAnswering
-who designed the,QuestionAnswering
-who found the,QuestionAnswering
-who created the,QuestionAnswering
-how many,QuestionAnswering
-how much,QuestionAnswering
-how far,QuestionAnswering
-how long,QuestionAnswering
-where is,QuestionAnswering
-where can i find,QuestionAnswering
-where was it,QuestionAnswering
-why is,QuestionAnswering
-what causes,QuestionAnswering
-what happens if,QuestionAnswering
-when did,QuestionAnswering
-when was,QuestionAnswering
-when is,QuestionAnswering
-what are this and that,QuestionAnswering
-what are these things,QuestionAnswering
-what is thing,QuestionAnswering
-what are those,QuestionAnswering
-what are,QuestionAnswering
-what is this,QuestionAnswering
-what does it mean,QuestionAnswering
-define,QuestionAnswering
-meaning of,QuestionAnswering
-who did something,QuestionAnswering
-who built the,QuestionAnswering
-what can you tell me about,QuestionAnswering
-give me information about,QuestionAnswering
-opinion on,QuestionAnswering
-feel about,QuestionAnswering
-thoughts on,QuestionAnswering
-think about,QuestionAnswering
-what do you think about,QuestionAnswering
-what are your thoughts on,QuestionAnswering
-how do you feel about,QuestionAnswering
-explain why,QuestionAnswering
-explain how,QuestionAnswering
-what does this do,QuestionAnswering
+"call me by my name",IdentityManagement,Identification
+"do you know my name",IdentityManagement,Identification
+"do you know who i am",IdentityManagement,Identification
+"do you remember me",IdentityManagement,Identification
+"do you remember my name",IdentityManagement,Identification
+"i told you my name",IdentityManagement,Identification
+"tell me my name",IdentityManagement,Identification
+"tell me who am i",IdentityManagement,Identification
+"tell me what i am called",IdentityManagement,Identification
+"what am i called",IdentityManagement,Identification
+"what is my name",IdentityManagement,Identification
+"who am i",IdentityManagement,Identification
+"can you remember who i am",IdentityManagement,Identification
+"can you add my name",IdentityManagement,NameChange
+"can you change my name",IdentityManagement,NameChange
+"can you rename me",IdentityManagement,NameChange
+"can you set my name",IdentityManagement,NameChange
+"can you switch my name",IdentityManagement,NameChange
+"can you update my name",IdentityManagement,NameChange
+"change my name",IdentityManagement,NameChange
+"i want to be named",IdentityManagement,NameChange
+"i want to change my name",IdentityManagement,NameChange
+"i want to switch my name",IdentityManagement,NameChange
+"i want to to be renamed",IdentityManagement,NameChange
+"i want to update my name",IdentityManagement,NameChange
+"i would like to set my name",IdentityManagement,NameChange
+"i want to set my name",IdentityManagement,NameChange
+"let us change my name",IdentityManagement,NameChange
+"let us switch my name",IdentityManagement,NameChange
+"let us update my name",IdentityManagement,NameChange
+"name me",IdentityManagement,NameChange
+"please set my name",IdentityManagement,NameChange
+"record my name",IdentityManagement,NameChange
+"rename me",IdentityManagement,NameChange
+"switch my name",IdentityManagement,NameChange
+"update my name",IdentityManagement,NameChange
+"you can update my name",IdentityManagement,NameChange
+"call me",IdentityManagement,NameDirect
+"call me emily",IdentityManagement,NameDirect
+"can you please call me",IdentityManagement,NameDirect
+"i am",IdentityManagement,NameDirect
+"i am called",IdentityManagement,NameDirect
+"i am called jane",IdentityManagement,NameDirect
+"let me tell you my name",IdentityManagement,NameDirect
+"my name is",IdentityManagement,NameDirect
+"my name is john",IdentityManagement,NameDirect
+"people call me",IdentityManagement,NameDirect
+"people call me mike",IdentityManagement,NameDirect
+"remember my name is ben",IdentityManagement,NameDirect
+"the name is",IdentityManagement,NameDirect
+"the name is sophia",IdentityManagement,NameDirect
+"you can call me",IdentityManagement,NameDirect
+"you can call me alex",IdentityManagement,NameDirect
+"you may call me",IdentityManagement,NameDirect
+"you may call me chris",IdentityManagement,NameDirect
+"can you delete my name",IdentityManagement,NameDelete
+"can you forget my name",IdentityManagement,NameDelete
+"can you remove my name",IdentityManagement,NameDelete
+"delete my name",IdentityManagement,NameDelete
+"forget me",IdentityManagement,NameDelete
+"forget my name",IdentityManagement,NameDelete
+"i want you to delete my name",IdentityManagement,NameDelete
+"i want you to forget me",IdentityManagement,NameDelete
+"i want you to forget my name",IdentityManagement,NameDelete
+"i want you to remove my name",IdentityManagement,NameDelete
+"remove my name",IdentityManagement,NameDelete
 
-can you help,Discoverability
-can you help me,Discoverability
-i need help,Discoverability
-i need assistance,Discoverability
-i do not understand,Discoverability
-i do not understand what to do,Discoverability
-i am lost,Discoverability
-help,Discoverability
-please help me,Discoverability
-i would like help,Discoverability
-i need some help,Discoverability
-could you help me out,Discoverability
-i am confused,Discoverability
-i dont understand,Discoverability
-show me what to do,Discoverability
-i need guidance,Discoverability
-can you guide me,Discoverability
-i need support,Discoverability
-im having trouble,Discoverability
-walk me through this,Discoverability
-how do i do this,Discoverability
-what commands can i use,Discoverability
-tell me about commands,Discoverability
-can you tell me about commands,Discoverability
-what are the commands,Discoverability
-i need help with commands,Discoverability
-can you help me with commands,Discoverability
-tell me your commands,Discoverability
-list commands,Discoverability
-show commands,Discoverability
-what are the available commands,Discoverability
-command help,Discoverability
-how do i use commands,Discoverability
-i need help with my name,Identification
-i need help with identification
-what can you do,Discoverability
-what can we do,Discoverability
-what can i do,Discoverability
-what are your capabilities,Discoverability
-what are you capable of,Discoverability
-what is your purpose,Discoverability
-tell me what you can do,Discoverability
-tell me about identification,Discoverability
-tell me how to set my name,Discoverability
-tell me your purpose,Discoverability
-show me your abilities,Discoverability
-explain your capabilities,Discoverability
-explain to me your capabilities,Discoverability
-explain to me about identification,Discoverability
-explain to me your purpose,Discoverability
-what functions do you have,Discoverability
-how can you help me,Discoverability
-what is your purpose,Discoverability
-explain your purpose,Discoverability
-explain to me your purpose,Discoverability
-what is the point of you,Discoverability
-what is the point of your existence,Discoverability
-describe your abilities,Discoverability
-tell me about yourself,Discoverability
+"what is the date",QuestionAnswering,
+"what day is it",QuestionAnswering,
+"what is the current time",QuestionAnswering,
+"what time is it",QuestionAnswering,
+"what is today’s date",QuestionAnswering,
+"what is today",QuestionAnswering,
+"tell me about",QuestionAnswering,
+"tell me something about",QuestionAnswering,
+"can you tell me about",QuestionAnswering,
+"i want to know about",QuestionAnswering,
+"do you know about",QuestionAnswering,
+"what do you know about",QuestionAnswering,
+"what do you know about this",QuestionAnswering,
+"explain to me about",QuestionAnswering,
+"give me details about",QuestionAnswering,
+"who is the leader of",QuestionAnswering,
+"who is the president of",QuestionAnswering,
+"who is the prime minister of",QuestionAnswering,
+"who invented the",QuestionAnswering,
+"who discovered the",QuestionAnswering,
+"who made the",QuestionAnswering,
+"who designed the",QuestionAnswering,
+"who found the",QuestionAnswering,
+"who created the",QuestionAnswering,
+"how many",QuestionAnswering,
+"how much",QuestionAnswering,
+"how far",QuestionAnswering,
+"how long",QuestionAnswering,
+"where is",QuestionAnswering,
+"where can i find",QuestionAnswering,
+"where was it",QuestionAnswering,
+"why is",QuestionAnswering,
+"what causes",QuestionAnswering,
+"what happens if",QuestionAnswering,
+"when did",QuestionAnswering,
+"when was",QuestionAnswering,
+"when is",QuestionAnswering,
+"what are this and that",QuestionAnswering,
+"what are these things",QuestionAnswering,
+"what is thing",QuestionAnswering,
+"what are those",QuestionAnswering,
+"what are",QuestionAnswering,
+"what is this",QuestionAnswering,
+"what does it mean",QuestionAnswering,
+"define",QuestionAnswering,
+"meaning of",QuestionAnswering,
+"who did something",QuestionAnswering,
+"who built the",QuestionAnswering,
+"what can you tell me about",QuestionAnswering,
+"give me information about",QuestionAnswering,
+"opinion on",QuestionAnswering,
+"feel about",QuestionAnswering,
+"thoughts on",QuestionAnswering,
+"think about",QuestionAnswering,
+"what do you think about",QuestionAnswering,
+"what are your thoughts on",QuestionAnswering,
+"how do you feel about",QuestionAnswering,
+"explain why",QuestionAnswering,
+"explain how",QuestionAnswering,
+"what does this do",QuestionAnswering,
+
+"hello",SmallTalk,
+"hi",SmallTalk,
+"hey",SmallTalk,
+"hi there",SmallTalk,
+"hey there",SmallTalk,
+"greetings",SmallTalk,
+"good morning",SmallTalk,
+"good afternoon",SmallTalk,
+"good evening",SmallTalk,
+"how are you",SmallTalk,
+"how are you doing",SmallTalk,
+"how have you been",SmallTalk,
+"how is it going",SmallTalk,
+"what is up",SmallTalk,
+"what are you doing",SmallTalk,
+"how is everything",SmallTalk,
+"how is life",SmallTalk,
+"how are things",SmallTalk,
+"it is good",SmallTalk,
+"it is bad",SmallTalk,
+"i am good",SmallTalk,
+"i am doing good",SmallTalk,
+"i am well",SmallTalk,
+"i am fine",SmallTalk,
+"i am sad",SmallTalk,
+"i am bored",SmallTalk,
+"i am happy",SmallTalk,
+"i am tired",SmallTalk,
+"i am okay",SmallTalk,
+"i am ok",SmallTalk,
+"i feel great",SmallTalk,
+"i feel down",SmallTalk,
+"i am doing bad",SmallTalk,
+"not much",SmallTalk,
+"nothing much",SmallTalk,
+"same as always",SmallTalk,
+"just chilling",SmallTalk,
+"thank",SmallTalk,
+"thanks",SmallTalk,
+"thank you",SmallTalk,
+"thank you so much",SmallTalk,
+"appreciate it",SmallTalk,
+"thanks a lot",SmallTalk,
+"no problem",SmallTalk,
+"you are welcome",SmallTalk,
+"nice to meet you",SmallTalk,
+"pleased to meet you",SmallTalk,
+"happy to meet you",SmallTalk,
+"it is nice talking to you",SmallTalk,
+"goodbye",SmallTalk,
+"bye",SmallTalk,
+"see you later",SmallTalk,
+"talk to you later",SmallTalk,
+"later",SmallTalk,
+"take care",SmallTalk,
+"have a nice day",SmallTalk,
+"have a good day",SmallTalk,
+"see you soon",SmallTalk,
+"what are you",SmallTalk,
+"who are you",SmallTalk,
+"what can you do",SmallTalk,
+"what can i do",SmallTalk,
+"i feel lonely",SmallTalk,
+"i feel great today",SmallTalk,
+"you are funny",SmallTalk,
+"you are nice",SmallTalk,
+"you are friendly",SmallTalk,
+"that is cool",SmallTalk,
+"that is nice",SmallTalk,
+"that is great",SmallTalk,
+"you are awesome",SmallTalk,
+"thank you for helping me",SmallTalk,
+"it is nice chatting with you",SmallTalk,
+"i am talking to you",SmallTalk,
+"i like talking to you",SmallTalk,
+"i am glad we are chatting",SmallTalk,
+"i enjoy chatting with you",SmallTalk,
+"that was nice",SmallTalk,
+"this is fun",SmallTalk,
+"you are kind",SmallTalk,
+"i appreciate your help",SmallTalk,
+"what is your name",SmallTalk,
+"good night",SmallTalk,
+"sweet dreams",SmallTalk,
+"how do you do",SmallTalk,
+"hey maila",SmallTalk,
+"hi maila",SmallTalk,
+"maila",SmallTalk,
+"hello maila",SmallTalk,
+"yo",SmallTalk,
+"sup",SmallTalk,
+"long time no see",SmallTalk,
+"nice to see you",SmallTalk,
+"how is your day",SmallTalk,
+"how is your morning",SmallTalk,
+"how is your afternoon",SmallTalk,
+"how is your evening",SmallTalk,
+"good to see you",SmallTalk,
+"how are you feeling",SmallTalk,
+"are you alright",SmallTalk,
+"are you okay",SmallTalk,
+"good to hear from you",SmallTalk,
+"nice talking to you",SmallTalk,
+"whats up",SmallTalk,
+"whats going on",SmallTalk,
+"whats happening",SmallTalk,
+"whats new",SmallTalk,
+"howdy",SmallTalk,
+"hiya",SmallTalk,
+"yo maila",SmallTalk,
+"hello again",SmallTalk,
+"you good",SmallTalk,
+"you ok",SmallTalk,
+"im back",SmallTalk,
+"i am here",SmallTalk,
+"im lonely",SmallTalk,
+"feeling lonely",SmallTalk,
+"i feel anxious",SmallTalk,
+"im stressed",SmallTalk,
+"i feel overwhelmed",SmallTalk,
+"i am depressed",SmallTalk,
+"i am frustrated",SmallTalk,
+"im nervous",SmallTalk,
+"i am nervous",SmallTalk,
+"make me laugh",SmallTalk,
+"say something",SmallTalk,
+"lets talk",SmallTalk,
+"can we chat",SmallTalk,
+"talk to me",SmallTalk,
+"talk with me",SmallTalk

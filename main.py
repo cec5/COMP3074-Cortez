@@ -108,21 +108,25 @@ class ChatbotGUI:
         self.chat_history.see(tk.END)
 
     def get_bot_response(self, query): # Check if this is acceptable for context tracking
-        if self.chat_state in ["awaiting_name", "awaiting_name_confirm"]:
-            response_text, new_name, new_state = self.identity_handler.get_identity_response(query, self.username, current_state=self.chat_state)
-            self.username = new_name
+        if query.lower == "cancel":
+            if self.chat_state == "normal":
+                response = "There is no ongoing action to cancel."
+            else:
+                self.chat_state = "normal"
+                response = "I've cancelled the ongoing action, what now?" 
+        elif self.chat_state in ["awaiting_name", "awaiting_name_confirm"]:
+            response_text, new_name, new_state = self.identity_handler.get_identity_response(query, self.username, subintent="none", current_state=self.chat_state)
             self.chat_state = new_state
+            self.username = new_name
             response = response_text
         elif self.chat_state in ["general_help_loop", "capabilities_help"]:
-            response_text, new_state = self.discoverability_handler.get_discoverability_response(query, current_state=self.chat_state)
-            self.chat_state = new_state
+            response_text, new_state = self.discoverability_handler.get_discoverability_response(query, subintent="none", current_state=self.chat_state)
             response = response_text
+            self.chat_state = new_state
         else:
-            intent, score = self.intent_classifier.classify(query, threshold=0.2)
+            intent, subintent, score = self.intent_classifier.classify(query, threshold=0.2)
             if query.lower() == "where am i" or query.lower() == "where am i?":
                 response = "The chatbot is currently in a normal state, there is no ongoing action."
-            elif query.lower() == "cancel":
-                response = "There is no ongoing action to cancel."
             elif intent == "SmallTalk":
                 raw_response = self.small_talk_handler.get_small_talk_response(query, threshold=0.4)
                 if "{username}" in raw_response:
@@ -131,14 +135,14 @@ class ChatbotGUI:
                 else:
                     response = raw_response
             elif intent == "IdentityManagement":
-                response_text, new_name, new_state = self.identity_handler.get_identity_response(query, self.username, threshold=0.3, current_state="normal")
+                response_text, new_name, new_state = self.identity_handler.get_identity_response(query, self.username, subintent=subintent, current_state="normal")
                 self.username = new_name
                 self.chat_state = new_state
                 response = response_text
             elif intent == "QuestionAnswering":
                 response = self.qa_handler.get_QA_response(query, threshold=0.65)
             elif intent == "Discoverability":
-                response_text, new_state = self.discoverability_handler.get_discoverability_response(query, threshold=0.3, current_state="normal")
+                response_text, new_state = self.discoverability_handler.get_discoverability_response(query, subintent=subintent, current_state="normal")
                 self.chat_state = new_state
                 response = response_text
             elif intent == "Unrecognized":
