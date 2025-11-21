@@ -1,13 +1,8 @@
 class Discoverability:
-    def __init__(self):
-        pass
-
     def get_discoverability_response(self, query, subintent, current_state="normal"):
         query = query.strip()
         if current_state == "general_help_loop":
-            if query.lower() == "where am i" or query.lower() == "where am i?":
-                return ("You are currently in the general help menu. You can elaborate further or cancel the action.", "general_help_loop")
-            elif any(word in query.lower() for word in ["no","nevermind"]):
+            if any(word in query.lower() for word in ["no","nevermind"]):
                 return ("Very well.", "normal")
             elif any(word in query.lower() for word in ["commands","command"]):
                 subintent = "HelpCommands"
@@ -18,13 +13,9 @@ class Discoverability:
             elif any(word in query.lower() for word in ["yes", "affirmative"]):
                 return ("I can certaintly tell you more, just specifiy what you would me to elaborate on! Commands, identification, or my capabilities?", "general_help_loop")
             else:
-                return ("I couldn't understand your reply, can you try again?", "general_help_loop")
+                return ("I couldn't understand your reply, do you still need general help?", "general_help_loop")
         elif current_state == "capabilities_help":
-            if "cancel" in query.lower():
-                return ("I've cancelled the current action, what now?", "normal")
-            elif query.lower() == "where am i" or query.lower() == "where am i?":
-                return ("You are currently in the capabilities help menu. You can ask me for further information about my capabilties.", "capabilities_help")
-            elif any(word in query.lower() for word in ["no","nevermind"]):
+            if any(word in query.lower() for word in ["no","nevermind"]):
                 return ("Very well.", "normal")
             elif any(word in query.lower() for word in ["yes","ok","alright"]):
                 return ("Alright, ask me about small talk, question and answering, identification, or email services for more information.", "capabilities_help")
@@ -37,12 +28,12 @@ class Discoverability:
             elif any(word in query.lower() for word in ["email","emails"]):
                 return ("I am capable of generating you a temporary email for use! As well as managing emails recieved at that address, if you wish to get started, ask me to generate you an email!", "normal") 
             else:
-                return ("I couldn't understand your reply, can you try again?", "capabilities_help")
+                return ("I couldn't understand your reply, do you still need regarding my capabilities?", "capabilities_help")
 
         if subintent == "HelpGeneral":
             return ("What do you need help with? Would you like any further information on commands, identification, or my capabilities?", "general_help_loop")
         elif subintent == "HelpCommands":
-            return ("I have two universal commands:\nCANCEL: cancels any ongoing action\nWHERE AM I: tells you what state the chatbot current is in.", "normal")
+            return ("I have three universal commands:\nWHERE AM I: tells you what state the chatbot current is in.\nGO BACK: Rewinds to the last step\nCANCEL: cancels any ongoing action in its entirety", "normal")
         elif subintent == "Identification":
             return ("If you tell me your name or tell me that you want to set your name, I am capable of remembering it. You can also change your name, or tell me to forget it entirely.", "normal")
         elif subintent == "Capabilities":

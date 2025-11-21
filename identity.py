@@ -21,11 +21,9 @@ class IdentityManagement:
             elif any(word in query.lower() for word in ["no","nevermind"]):
                 return ("Alright then!", username, "normal")
             else:
-                return ("I couldn't understand your reply, can you try again? (Yes/No/Cancel)", username, "awaiting_name_confirm")
+                return ("I'm sorry, did you want to set your name?", username, "awaiting_name_confirm")
         elif current_state == "awaiting_name":
-            if query.lower() == "cancel":
-                return ("I've cancelled the current action, what now?", username, "normal")
-            elif query:
+            if query:
                 new_name = query.strip().capitalize()
                 return (f"Got it, you are {new_name}!", new_name, "normal")
             else:
@@ -50,7 +48,7 @@ class IdentityManagement:
             if username:
                 return (f"I’ve forgotten your name, {username}.", None, "normal")
             else:
-                return ("I don’t think I know your name yet.", username, "normal")
+                return ("Unfortunately, I can't forget a name that I don't know.", username, "normal")
         elif subintent == "Unrecognized":
             return ("I’m not sure what you mean about your name.", username, "normal")
         elif subintent == "SystemError":

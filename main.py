@@ -26,7 +26,9 @@ class ChatbotGUI:
         self.root.geometry("420x600")
         self.root.configure(bg=BG_COLOR)
         self.username = None
-        self.chat_state = "normal"
+        self.chat_stack = ["normal"]
+        self.IDENTITY_TASK_STATES = {"awaiting_name", "awaiting_name_confirm"}
+        self.DISCOVER_TASK_STATES = {"general_help_loop", "capabilities_help"}
         self.intent_classifier = IntentClassifier()
         self.small_talk_handler = SmallTalkHandler()
         self.qa_handler = QAHandler()
@@ -107,45 +109,87 @@ class ChatbotGUI:
         self.chat_history.config(state=tk.DISABLED)
         self.chat_history.see(tk.END)
 
-    def get_bot_response(self, query): # Check if this is acceptable for context tracking
-        if query.lower == "cancel":
-            if self.chat_state == "normal":
-                response = "There is no ongoing action to cancel."
+    def manage_state(self, new_state):
+            current_state = self.chat_stack[-1]
+            if new_state == "normal":
+                if current_state in self.IDENTITY_TASK_STATES:
+                    while self.chat_stack and self.chat_stack[-1] in self.IDENTITY_TASK_STATES:
+                        self.chat_stack.pop()
+                elif current_state in self.DISCOVER_TASK_STATES:
+                    while self.chat_stack and self.chat_stack[-1] in self.DISCOVER_TASK_STATES:
+                        self.chat_stack.pop()
+                elif len(self.chat_stack) > 1:
+                    self.chat_stack.pop()
+            elif new_state != current_state:
+                self.chat_stack.append(new_state)
+
+    def get_bot_response(self, query):
+        current_state = self.chat_stack[-1]
+        response = ""
+
+        if query.lower() == "cancel":
+            if current_state in self.IDENTITY_TASK_STATES:
+                while self.chat_stack and self.chat_stack[-1] in self.IDENTITY_TASK_STATES:
+                    self.chat_stack.pop()
+                response = f"I've cancelled the identity task. We are now in the '{self.chat_stack[-1]}' state."
+            elif current_state in self.DISCOVER_TASK_STATES:
+                while self.chat_stack and self.chat_stack[-1] in self.DISCOVER_TASK_STATES:
+                    self.chat_stack.pop()
+                response = f"I've cancelled the help task. We are now in the '{self.chat_stack[-1]}' state."
+            elif len(self.chat_stack) > 1:
+                self.chat_stack.pop()
+                response = f"I've cancelled the ongoing action. We are now in the '{self.chat_stack[-1]}' state. What now?"
             else:
-                self.chat_state = "normal"
-                response = "I've cancelled the ongoing action, what now?" 
-        elif self.chat_state in ["awaiting_name", "awaiting_name_confirm"]:
-            response_text, new_name, new_state = self.identity_handler.get_identity_response(query, self.username, subintent="none", current_state=self.chat_state)
-            self.chat_state = new_state
+                response = "There is no ongoing action to cancel."
+            self.add_chat_message(response, "bot")
+            return
+        elif query.lower() == "go back":
+            if len(self.chat_stack) > 1:
+                self.chat_stack.pop()
+                response = f"Okay, I've gone back one step. We are now in the '{self.chat_stack[-1]}' state."
+            else:
+                response = "There's nothing to go back to."
+            self.add_chat_message(response, "bot")
+            return
+        elif query.lower() == "where am i" or query.lower() == "where am i?":
+            response = f"The chatbot is currently in the '{current_state}' state."
+            self.add_chat_message(response, "bot")
+            return
+        # TODO add command 'what now' to explain what the user can do now (especially for the email actions)
+        # TODO add command 'repeat' to repeat the bot response to the initiation of the ongoing action (useful in 'go back' cases)
+
+        intent, subintent, score = self.intent_classifier.classify(query, threshold=0.2)
+
+        # Play with the order here to allow certain things mid-action
+        if current_state in self.IDENTITY_TASK_STATES: # Always want this handled first, I don't want users initiating anything else during this
+            response_text, new_name, new_state = self.identity_handler.get_identity_response(query, self.username, subintent="none", current_state=current_state)
             self.username = new_name
+            self.manage_state(new_state)
             response = response_text
-        elif self.chat_state in ["general_help_loop", "capabilities_help"]:
-            response_text, new_state = self.discoverability_handler.get_discoverability_response(query, subintent="none", current_state=self.chat_state)
+        elif intent == "IdentityManagement":
+            response_text, new_name, new_state = self.identity_handler.get_identity_response(query, self.username, subintent=subintent, current_state=current_state)
+            self.username = new_name
+            self.manage_state(new_state)
             response = response_text
-            self.chat_state = new_state
+        elif intent == "SmallTalk":
+            raw_response = self.small_talk_handler.get_small_talk_response(query, threshold=0.4)
+            if "{username}" in raw_response:
+                name_to_insert = self.username if self.username else "friend"
+                response = raw_response.replace("{username}", name_to_insert)
+            else:
+                response = raw_response
+        elif intent == "QuestionAnswering":
+            response = self.qa_handler.get_QA_response(query, threshold=0.65)
+        elif current_state in self.DISCOVER_TASK_STATES:
+            response_text, new_state = self.discoverability_handler.get_discoverability_response(query, subintent="none", current_state=current_state)
+            self.manage_state(new_state)
+            response = response_text
+        elif intent == "Discoverability":
+            response_text, new_state = self.discoverability_handler.get_discoverability_response(query, subintent=subintent, current_state=current_state)
+            self.manage_state(new_state)
+            response = response_text
         else:
-            intent, subintent, score = self.intent_classifier.classify(query, threshold=0.2)
-            if query.lower() == "where am i" or query.lower() == "where am i?":
-                response = "The chatbot is currently in a normal state, there is no ongoing action."
-            elif intent == "SmallTalk":
-                raw_response = self.small_talk_handler.get_small_talk_response(query, threshold=0.4)
-                if "{username}" in raw_response:
-                    name_to_insert = self.username if self.username else "friend"
-                    response = raw_response.replace("{username}", name_to_insert)
-                else:
-                    response = raw_response
-            elif intent == "IdentityManagement":
-                response_text, new_name, new_state = self.identity_handler.get_identity_response(query, self.username, subintent=subintent, current_state="normal")
-                self.username = new_name
-                self.chat_state = new_state
-                response = response_text
-            elif intent == "QuestionAnswering":
-                response = self.qa_handler.get_QA_response(query, threshold=0.65)
-            elif intent == "Discoverability":
-                response_text, new_state = self.discoverability_handler.get_discoverability_response(query, subintent=subintent, current_state="normal")
-                self.chat_state = new_state
-                response = response_text
-            elif intent == "Unrecognized":
+            if intent == "Unrecognized":
                 response = "Forgive me, but I'm unable to recognize what you are saying."
             else:
                 response = "[SYSTEM ERROR]: An internal classification error occurred."
