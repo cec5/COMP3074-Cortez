@@ -19,6 +19,79 @@ BUTTON_FG = "#ffffff"
 FONT = ("Helvetica", 11)
 FONT_BOLD = ("Helvetica", 11, "bold")
 
+class EmailViewer(tk.Toplevel):
+    def __init__(self, master, email_data):
+        super().__init__(master)
+        subject = email_data.get('mail_subject', 'No Subject')
+        sender = email_data.get('mail_from', 'Unknown Sender')
+        body = email_data.get('mail_body', 'No content.')
+        self.title(f"Email Viewer - {subject[:40]}...")
+        self.geometry("700x550")
+        self.configure(bg=BG_COLOR)
+        header_frame = tk.Frame(self, bg=CHAT_BG)
+        header_frame.pack(fill='x', padx=10, pady=(10, 5))
+        tk.Label(
+            header_frame, 
+            text="From:", 
+            font=FONT_BOLD, 
+            bg=CHAT_BG, 
+            fg=TEXT_COLOR
+        ).pack(anchor='w', padx=10, pady=(5, 0))
+        tk.Label(
+            header_frame, 
+            text=sender, 
+            font=FONT, 
+            bg=CHAT_BG, 
+            fg=TEXT_COLOR, 
+            justify='left'
+        ).pack(anchor='w', padx=10, pady=(0, 5))
+        tk.Label(
+            header_frame, 
+            text="Subject:", 
+            font=FONT_BOLD, 
+            bg=CHAT_BG, 
+            fg=TEXT_COLOR
+        ).pack(anchor='w', padx=10, pady=(5, 0))
+        tk.Label(
+            header_frame, 
+            text=subject, 
+            font=FONT, 
+            bg=CHAT_BG, 
+            fg=TEXT_COLOR, 
+            justify='left'
+        ).pack(anchor='w', padx=10, pady=(0, 10))
+        body_frame = tk.Frame(self, bg=CHAT_BG)
+        body_frame.pack(expand=True, fill='both', padx=10, pady=5)
+        txt_area = scrolledtext.ScrolledText(
+            body_frame, 
+            wrap=tk.WORD, 
+            undo=True,
+            bg=CHAT_BG,
+            fg=TEXT_COLOR,
+            font=FONT,
+            relief=tk.FLAT,
+            bd=0,
+            padx=10,
+            pady=10
+        )
+        txt_area.pack(expand=True, fill='both')
+        txt_area.insert(tk.INSERT, body)
+        txt_area.configure(state='disabled')
+        tk.Button(
+            self, 
+            text="Close", 
+            command=self.destroy,
+            font=FONT_BOLD,
+            bg="#128c7e", # BUTTON_BG
+            fg="#ffffff", # BUTTON_FG
+            relief=tk.FLAT,
+            activebackground="#075e54",
+            activeforeground="#ffffff"
+        ).pack(pady=10)
+        self.transient(master)
+        self.grab_set()
+        self.lift()
+
 class ChatbotGUI:
     def __init__(self, root):
         self.root = root
