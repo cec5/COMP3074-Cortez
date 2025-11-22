@@ -1,5 +1,93 @@
 Phrase,Intent,Subintent
 
+"i need a temporary email",Email,start_session
+"can you create a disposable inbox for me",Email,start_session
+"generate a new email address",Email,start_session
+"i want to start a new email session",Email,start_session
+"let us make a temp mail",Email,start_session
+"give me a temporary email",Email,start_session
+"i need a throwaway email",Email,start_session
+"can i get a new email",Email,start_session
+"create a new session",Email,start_session
+"make me an email",Email,start_session
+"i want to restore my session",Email,restore_session
+"can i load my old email session",Email,restore_session
+"i have a session id",Email,restore_session
+"let us restore my session",Email,restore_session
+"restore my previous inbox",Email,restore_session
+"i want to use my session id",Email,restore_session
+"load my email session",Email,restore_session
+"i need to restore my session",Email,restore_session
+"use this session id",Email,restore_session
+"restore session",Email,restore_session
+"show me my inbox",Email,list_emails
+"what emails do i have",Email,list_emails
+"list all my emails",Email,list_emails
+"can i see my inbox",Email,list_emails
+"are there any emails for me",Email,list_emails
+"check my email",Email,list_emails
+"show me my messages",Email,list_emails
+"what is in my inbox",Email,list_emails
+"list my emails",Email,list_emails
+"get my inbox",Email,list_emails
+"check for new mail",Email,update_inbox
+"refresh my inbox",Email,update_inbox
+"are there any new emails",Email,update_inbox
+"get new messages",Email,update_inbox
+"update my email list",Email,update_inbox
+"fetch new mail",Email,update_inbox
+"poll for new emails",Email,update_inbox
+"check for updates",Email,update_inbox
+"any new mail",Email,update_inbox
+"read email 1",Email,view_email
+"show me the message with id 12345",Email,view_email
+"i want to view email 2",Email,view_email
+"open the first email",Email,view_email
+"let me see email 3",Email,view_email
+"view message 4",Email,view_email
+"what does email 5 say",Email,view_email
+"display the content of email 1",Email,view_email
+"view email",Email,view_email
+"open this email",Email,view_email
+"save email 123",Email,download_email
+"download that message",Email,download_email
+"i want to download email 2",Email,download_email
+"can you save this email for me",Email,download_email
+"save the email to a file",Email,download_email
+"download email 3",Email,download_email
+"i need to save this email",Email,download_email
+"download",Email,download_email
+"save this message",Email,download_email
+"delete email 45",Email,delete_email
+"get rid of that message",Email,delete_email
+"i want to delete email 3",Email,delete_email
+"remove email 1 from my inbox",Email,delete_email
+"delete the message with id 5",Email,delete_email
+"please delete this email",Email,delete_email
+"send email 2 to trash",Email,delete_email
+"delete",Email,delete_email
+"remove this email",Email,delete_email
+"i am done with my email",Email,end_session
+"delete this session",Email,end_session
+"forget me and my email",Email,end_session
+"end my email session",Email,end_session
+"i do not need this email anymore",Email,end_session
+"close my session",Email,end_session
+"log out of my email",Email,end_session
+"i want to end this session",Email,end_session
+"end session",Email,end_session
+"forget this email session",Email,end_session
+"i want to manage my emails",Email,manage_session
+"let me manage my email session",Email,manage_session
+"email options",Email,manage_session
+"what can i do with my email",Email,manage_session
+"email management",Email,manage_session
+"i am done with email for now",Email,exit_loop
+"exit email task",Email,exit_loop
+"stop managing emails",Email,exit_loop
+"go back to normal chat",Email,exit_loop
+"exit loop",Email,exit_loop
+
 "can you help",Discoverability,HelpGeneral
 "can you help me",Discoverability,HelpGeneral
 "could you help me out",Discoverability,HelpGeneral
@@ -29,8 +117,6 @@ Phrase,Intent,Subintent
 "what are the available commands",Discoverability,HelpCommands
 "what are the commands",Discoverability,HelpCommands
 "what commands can i use",Discoverability,HelpCommands
-"can you tell me the commands",Discoverability,HelpCommands
-"can you tell me about commands",Discoverability,HelpCommands
 "describe your abilities",Discoverability,Capabilities
 "explain to me your capabilities",Discoverability,Capabilities
 "explain your capabilities",Discoverability,Capabilities
@@ -128,6 +214,7 @@ Phrase,Intent,Subintent
 "what is the date",QuestionAnswering,
 "what day is it",QuestionAnswering,
 "what is the current time",QuestionAnswering,
+"what is the capital of",QuestionAnswering,
 "what time is it",QuestionAnswering,
 "what is today’s date",QuestionAnswering,
 "what is today",QuestionAnswering,

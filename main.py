@@ -7,6 +7,7 @@ from small_talk import SmallTalkHandler
 from question_answer import QAHandler
 from identity import IdentityManagement
 from discoverability import Discoverability
+from transaction import EmailHandler, EMAIL_TASK_STATES
 
 BG_COLOR = "#ece5dd"
 CHAT_BG = "#ffffff"
@@ -82,8 +83,8 @@ class EmailViewer(tk.Toplevel):
             text="Close", 
             command=self.destroy,
             font=FONT_BOLD,
-            bg="#128c7e", # BUTTON_BG
-            fg="#ffffff", # BUTTON_FG
+            bg="#128c7e",
+            fg="#ffffff",
             relief=tk.FLAT,
             activebackground="#075e54",
             activeforeground="#ffffff"
@@ -99,14 +100,18 @@ class ChatbotGUI:
         self.root.geometry("420x600")
         self.root.configure(bg=BG_COLOR)
         self.username = None
+        self.session_id = None
+        self.email_address = None
         self.chat_stack = ["normal"]
         self.IDENTITY_TASK_STATES = {"awaiting_name", "awaiting_name_confirm"}
         self.DISCOVER_TASK_STATES = {"general_help_loop", "capabilities_help"}
+        self.EMAIL_TASK_STATES = set(EMAIL_TASK_STATES)
         self.intent_classifier = IntentClassifier()
         self.small_talk_handler = SmallTalkHandler()
         self.qa_handler = QAHandler()
         self.identity_handler = IdentityManagement()
         self.discoverability_handler = Discoverability()
+        self.email_handler = EmailHandler()
         self.create_widgets()
         self.add_chat_message("Hello! I am Maila, let's chat!", "bot")
 
@@ -182,6 +187,7 @@ class ChatbotGUI:
         self.chat_history.config(state=tk.DISABLED)
         self.chat_history.see(tk.END)
 
+    # generally, we want to the pop the entire group if the chain is completed
     def manage_state(self, new_state):
             current_state = self.chat_stack[-1]
             if new_state == "normal":
@@ -191,6 +197,9 @@ class ChatbotGUI:
                 elif current_state in self.DISCOVER_TASK_STATES:
                     while self.chat_stack and self.chat_stack[-1] in self.DISCOVER_TASK_STATES:
                         self.chat_stack.pop()
+                elif current_state in self.EMAIL_TASK_STATES:
+                    while self.chat_stack and self.chat_stack[-1] in self.EMAIL_TASK_STATES:
+                        self.chat_stack.pop()      
                 elif len(self.chat_stack) > 1:
                     self.chat_stack.pop()
             elif new_state != current_state:
@@ -199,6 +208,7 @@ class ChatbotGUI:
     def get_bot_response(self, query):
         current_state = self.chat_stack[-1]
         response = ""
+        action_data = None
 
         if query.lower() == "cancel":
             if current_state in self.IDENTITY_TASK_STATES:
@@ -209,6 +219,9 @@ class ChatbotGUI:
                 while self.chat_stack and self.chat_stack[-1] in self.DISCOVER_TASK_STATES:
                     self.chat_stack.pop()
                 response = f"I've cancelled the help task. We are now in the '{self.chat_stack[-1]}' state."
+            elif current_state in self.EMAIL_TASK_STATES:
+                while self.chat_stack and self.chat_stack[-1] in self.EMAIL_TASK_STATES:
+                    self.chat_stack.pop()
             elif len(self.chat_stack) > 1:
                 self.chat_stack.pop()
                 response = f"I've cancelled the ongoing action. We are now in the '{self.chat_stack[-1]}' state. What now?"
@@ -244,6 +257,10 @@ class ChatbotGUI:
             self.username = new_name
             self.manage_state(new_state)
             response = response_text
+        elif current_state in self.DISCOVER_TASK_STATES: # I think this makes sense to put here, but keep discovery initialization low
+            response_text, new_state = self.discoverability_handler.get_discoverability_response(query, subintent="none", current_state=current_state)
+            self.manage_state(new_state)
+            response = response_text
         elif intent == "SmallTalk":
             raw_response = self.small_talk_handler.get_small_talk_response(query, threshold=0.4)
             if "{username}" in raw_response:
@@ -253,10 +270,15 @@ class ChatbotGUI:
                 response = raw_response
         elif intent == "QuestionAnswering":
             response = self.qa_handler.get_QA_response(query, threshold=0.65)
-        elif current_state in self.DISCOVER_TASK_STATES:
-            response_text, new_state = self.discoverability_handler.get_discoverability_response(query, subintent="none", current_state=current_state)
-            self.manage_state(new_state)
+        elif intent == "Email" or current_state in self.EMAIL_TASK_STATES:
+            new_state, response_text, session_data, action_data = self.email_handler.handle_email_task(current_state, subintent, query, self.session_id)
+            if session_data is not None:
+                self.session_id, self.email_address = session_data
+            self.manage_state(new_state if new_state else "normal")
             response = response_text
+            if action_data:
+                if action_data['action'] == 'view_email':
+                    EmailViewer(self.root, action_data['data'])
         elif intent == "Discoverability":
             response_text, new_state = self.discoverability_handler.get_discoverability_response(query, subintent=subintent, current_state=current_state)
             self.manage_state(new_state)
