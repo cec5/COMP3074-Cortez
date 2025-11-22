@@ -2,6 +2,8 @@ import requests
 import time
 import os
 import json
+from requests.exceptions import RequestException, HTTPError, ConnectionError
+from urllib3.exceptions import NameResolutionError
 
 class GuerrillaSession:
     
@@ -22,24 +24,22 @@ class GuerrillaSession:
         response = self._api_call('get_email_address', params, method='GET')
         if response and 'email_addr' in response:
             self._update_session_details(response)
-            return f"New session started. Your temporary email is: {self.email_addr}"
-        else:
-            return "Error: Could not start a new session. The mail server might be down."
+            return True
+        return False
 
     def restore_session(self, sid_token):
         if not sid_token:
-            return "Error: You must provide a Session ID to restore."
+            raise ValueError("Session ID is required to restore.")
             
         params = {'sid_token': sid_token, 'lang': self.lang}
         response = self._api_call('get_email_address', params, method='GET')
         
         if response and 'auth' in response and 'error_codes' in response['auth'] and 'auth-session-not-initialized' in response['auth']['error_codes']:
-            return f"Error: Session ID {sid_token} is invalid or has expired."
+            raise Exception(f"Session ID {sid_token} is invalid or has expired.")
         elif response and 'email_addr' in response:
             self._update_session_details(response)
-            return f"Successfully restored session for {self.email_addr}"
-        else:
-            return "Error: Could not restore session. The server might be down."
+            return True
+        return False
 
     def _update_session_details(self, response_json):
         if not isinstance(response_json, dict):
@@ -85,58 +85,22 @@ class GuerrillaSession:
             self._update_session_details(response_json)
             return response_json
 
-        except requests.HTTPError as e:
-            print(f"HTTP Error: {e.response.status_code} for URL: {e.response.url}")
-        except requests.RequestException as e:
-            print(f"An error occurred: {e}")
+        except (ConnectionError, NameResolutionError, HTTPError, RequestException) as e:
+            print(f"[GuerrillaSession ERROR] API call failed: {e}")
+            raise e
         except json.JSONDecodeError:
-            print(f"Failed to decode JSON response: {response.text}")
+            print(f"[GuerrillaSession ERROR] Failed to decode JSON response: {response.text}")
+            raise Exception("Failed to decode API response.")
             
         return None 
 
     def get_inbox_list(self, offset=0):
         if not self.sid_token:
-            return "You don't have an active session. Please start a new session first."
+            raise Exception("No active session.")
         response = self._api_call('get_email_list', {'offset': str(offset)})
         if response and 'list' in response:
-            return self.format_inbox_list()
-        return "I couldn't fetch your inbox from the mail server."
-
-    def check_new_emails(self):
-        if not self.sid_token:
-            return "You don't have an active session. Please start a new session first."
-        seq = 0
-        if self.inbox:
-            seq = max(int(email.get('mail_id', 0)) for email in self.inbox)
-        
-        response = self._api_call('check_email', {'seq': str(seq)})
-        
-        if response and 'list' in response:
-            new_emails = response['list']
-            if not new_emails:
-                return "No new mail."
-            
-            formatted_list = "New Mail\n"
-            for i, email in enumerate(new_emails, 1):
-                subject = email.get('mail_subject', 'No Subject')
-                sender = email.get('mail_from', 'Unknown Sender')
-                timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(email.get('mail_timestamp', 0))))
-                formatted_list += f"[{i}] {subject} - From: {sender} ({timestamp})\n"
-            return formatted_list
-        return "I couldn't check for new mail right now."
-
-    def format_inbox_list(self):
-        if not self.inbox:
-            return "Your inbox is currently empty."
-        
-        formatted_list = "Current Inbox\n"
-        for i, email in enumerate(self.inbox, 1):
-            subject = email.get('mail_subject', 'No Subject')
-            sender = email.get('mail_from', 'Unknown Sender')
-            timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(email.get('mail_timestamp', 0))))
-            read_status = " (Read)" if email.get('mail_read', '0') == '1' else " (Unread)"
-            formatted_list += f"[{i}] {subject} - From: {sender} ({timestamp}){read_status}\n"
-        return formatted_list
+            return self.inbox # Return the raw data
+        return [] # Return empty list on failure
 
     def _get_email_ids_from_indices(self, indices_str):
         if not self.inbox:
@@ -172,29 +136,29 @@ class GuerrillaSession:
 
     def fetch_email_body(self, index):
         if not self.sid_token:
-            return "You don't have an active session. Please start a new session first."
+            raise Exception("No active session.")
         try:
             index_int = int(index)
             if not (1 <= index_int <= len(self.inbox)):
-                return f"Error: Index {index_int} is out of bounds (1-{len(self.inbox)})."
+                raise ValueError(f"Index {index_int} is out of bounds (1-{len(self.inbox)}).")
         except ValueError:
-            return f"Error: Index must be a number."
+            raise ValueError("Index must be a number.")
             
         mail_id = self.inbox[index_int - 1]['mail_id']
-        
         response = self._api_call('fetch_email', {'email_id': mail_id})
         
         if response and 'mail_body' in response:
             self.inbox[index_int - 1]['mail_read'] = '1'
             return response
-        return f"Error: Could not fetch email ID {mail_id}."
+        return None
 
     def delete_emails(self, indices_str):
         if not self.sid_token:
-            return "You don't have an active session. Please start a new session first."
+            raise Exception("No active session.")
+        
         mail_ids = self._get_email_ids_from_indices(indices_str)
         if not mail_ids:
-            return "You either have no emails, or you didn't provide a valid index."
+            raise ValueError("No valid email indices provided.")
             
         params = [('email_ids[]', mid) for mid in mail_ids]
         response = self._api_call('del_email', params=params, method='POST')
@@ -202,15 +166,16 @@ class GuerrillaSession:
         if response and 'deleted_ids' in response:
             deleted_ids_set = set(response['deleted_ids'])
             self.inbox = [email for email in self.inbox if email['mail_id'] not in deleted_ids_set]
-            return f"Successfully deleted {len(deleted_ids_set)} email(s)."
-        return "I failed to delete those emails. Please try again."
+            return deleted_ids_set
+        return None
 
     def download_emails(self, indices_str):
         if not self.sid_token:
-            return "You don't have an active session. Please start a new session first."
+            raise Exception("No active session.")
+        
         mail_ids = self._get_email_ids_from_indices(indices_str)
         if not mail_ids:
-            return "You either have no emails, or you didn't provide a valid index."
+            raise ValueError("No valid email indices provided.")
             
         save_dir = os.path.join("downloads", self.sid_token)
         os.makedirs(save_dir, exist_ok=True)
@@ -240,32 +205,14 @@ class GuerrillaSession:
                     failed_files += 1
             else:
                 failed_files += 1
-        return f"Successfully downloaded {len(downloaded_files)} emails to the '{save_dir}' folder."
-
-    def get_email_data_for_view(self, index):
-        if not self.sid_token:
-            return "You don't have an active session. Please start a new session first."
-        return self.fetch_email_body(index)
-
-    def set_new_email(self, local_part):
-        if not self.sid_token:
-            return "You don't have an active session. Please start a new session first."
-        if not local_part:
-            return "You need to provide a name, like 'set my-test-email'."
-        params = {'email_user': local_part, 'lang': self.lang}
-        response = self._api_call('set_email_user', params, method='POST')
-        if response and 'email_addr' in response:
-            old_email = self.email_addr
-            self.inbox = [] 
-            return f"Done! Your email has been changed from {old_email} to {self.email_addr}."
-        return "I couldn't set that email address. It might be taken or invalid."
+        return (downloaded_files, failed_files)
 
     def forget_current_email(self):
         if not self.sid_token:
-            return "You don't have an active session. Please start a new session first."
+            raise Exception("No active session.")
         if not self.email_addr:
-            return "There's no active email address to forget."
-            
+            return True 
+         
         params = {'email_addr': self.email_addr}
         response = self._api_call('forget_me', params, method='POST')
         
@@ -274,12 +221,5 @@ class GuerrillaSession:
             self.email_timestamp = None
             self.alias = None
             self.inbox = []
-            return "Okay, I've forgotten your old email address."
-        return "I failed to forget that email. Please try again."
-        
-    def end_session(self):
-        self.sid_token = None
-        self.email_addr = None
-        self.email_timestamp = None
-        self.alias = None
-        self.inbox = []
+            return True
+        return False

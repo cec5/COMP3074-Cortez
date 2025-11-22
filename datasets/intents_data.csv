@@ -143,6 +143,21 @@ Phrase,Intent,Subintent
 "what is the point of you",Discoverability,Purpose
 "what is the point of your existence",Discoverability,Purpose
 "what is your purpose",Discoverability,Purpose
+"i need help with small talk",Discoverability,HelpSmallTalk
+"tell me about small talk",Discoverability,HelpSmallTalk
+"explain chatting to me",Discoverability,HelpSmallTalk
+"how does small talk work",Discoverability,HelpSmallTalk
+"help with question answering",Discoverability,HelpQA
+"tell me about question answering",Discoverability,HelpQA
+"explain question answering",Discoverability,HelpQA
+"how do you answer questions",Discoverability,HelpQA
+"help with email",Discoverability,HelpEmail
+"tell me about the email service",Discoverability,HelpEmail
+"explain the email feature",Discoverability,HelpEmail
+"how does the temporary email work",Discoverability,HelpEmail
+"how do i set up the email",Discoverability,HelpEmail
+"how do i generate an email",Discoverability,HelpEmail
+"how do i generate a temporary email address",Discoverability,HelpEmail
 
 "call me by my name",IdentityManagement,Identification
 "do you know my name",IdentityManagement,Identification

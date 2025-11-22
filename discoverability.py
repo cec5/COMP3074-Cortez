@@ -128,5 +128,11 @@ class Discoverability:
             return (self._get_random_response("Capabilities"), "capabilities_help")
         elif subintent == "Purpose":
             return (self._get_random_response("Purpose"), "normal")
+        elif subintent == "HelpSmallTalk":
+            return (self._get_random_response("capabilities_help_smalltalk"), "normal")
+        elif subintent == "HelpQA":
+            return (self._get_random_response("capabilities_help_qa"), "normal")
+        elif subintent == "HelpEmail":
+            return (self._get_random_response("capabilities_help_email"), "normal")
         else:
             return (self._get_random_response("Error"), "normal")

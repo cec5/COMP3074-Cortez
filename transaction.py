@@ -2,24 +2,21 @@ import re
 import os
 import random
 from guerrilla_mail import GuerrillaSession
+from requests.exceptions import RequestException, ConnectionError, HTTPError
+from urllib3.exceptions import NameResolutionError
 
-EMAIL_SESSION_STATES = [
+EMAIL_AWAITING_STATES = [
     'awaiting_session_start_confirm',
     'awaiting_session_restore_confirm',
     'awaiting_session_restore',
     'awaiting_session_end_confirm',
     'awaiting_view_index',
     'awaiting_delete_index',
-    'awaiting_download_index'
+    'awaiting_download_index',
+    'awaiting_delete_all_confirm'
 ]
-EMAIL_MANAGE_STATES = [
-    'general_email_loop',
-    'list_email_loop',
-    'delete_email',
-    'view_email',
-    'download_email'
-]
-EMAIL_TASK_STATES = EMAIL_SESSION_STATES + EMAIL_MANAGE_STATES
+EMAIL_LOOP_STATES = ['email_manage_loop']
+EMAIL_TASK_STATES = EMAIL_AWAITING_STATES + EMAIL_LOOP_STATES
 
 class EmailResponseGenerator:
     def __init__(self):
@@ -51,6 +48,16 @@ class EmailResponseGenerator:
                 "Your inbox is currently empty.",
                 "Looks like there's nothing here. Your inbox is empty.",
                 "No emails found in your inbox."
+            ],
+            'manage_session': [
+                "You have an active email session. You can 'list emails', 'view [index]', 'delete [index]', 'download [index]', or 'end session'.",
+                "Okay, you're in your email session. What would you like to do? You can list, view, download, delete, or end the session.",
+                "Session active. Your options are: list emails, view, download, delete, or end session."
+            ],
+            'confirm_delete_all': [
+                "Are you absolutely sure you want to delete ALL emails in your inbox? This cannot be undone.",
+                "Warning: This will permanently delete all messages. Are you sure you want to proceed?",
+                "Just to confirm, you want to delete every single email? Please say 'yes' or 'no'."
             ]
         }
 
@@ -77,6 +84,10 @@ class EmailResponseGenerator:
         elif intent_type == 'download_emails':
             template = random.choice(self.templates['download_emails'])
             return template.format(result_text=content_data['result_text'])
+        elif intent_type == 'manage_session':
+            return random.choice(self.templates['manage_session'])
+        elif intent_type == 'confirm_delete_all':
+            return random.choice(self.templates['confirm_delete_all'])
         return "I'm not sure how to phrase that."
 
 class EmailHandler:
@@ -93,7 +104,9 @@ class EmailHandler:
 
     def _extract_email_indices(self, text, subintent):
         processed_text = text.lower().replace(subintent, "").strip()
-        match = re.search(r'([\d,\s\-all]+)$', processed_text)
+        if "all" in processed_text:
+            return "all"
+        match = re.search(r'([\d,\s\-]+)$', processed_text)
         if match:
             return match.group(1).strip()
         return None
@@ -115,20 +128,21 @@ class EmailHandler:
         new_state = current_state
         new_session_data = None
         action_data = None
-        management_intents = ['list_emails', 'update_inbox', 'view_email', 'download_email','delete_email', 'end_session', 'manage_session', 'exit_loop']
-        if not session_id and subintent in management_intents:
-            response = "You don't have an active temporary email session. Would you like to create one?"
-            new_state = 'awaiting_session_start_confirm'
-            return (new_state, response, None, None)
-        if subintent == 'start_session':
-            if session_id:
-                response = "You already have an active session. You must 'end session' before starting a new one."
-                new_state = None
+        try:
+            management_intents = ['list_emails', 'update_inbox', 'view_email', 'download_email','delete_email', 'end_session', 'manage_session', 'exit_loop']
+            if not session_id and subintent in management_intents:
+                response = "You don't have an active temporary email session. Would you like to create one?"
+                new_state = 'awaiting_session_start_confirm'
                 return (new_state, response, None, None)
-            try:
+            
+            if subintent == 'start_session':
+                if session_id:
+                    response = "You already have an active session. You must 'end session' before starting a new one."
+                    new_state = None
+                    return (new_state, response, None, None)
                 session = GuerrillaSession()
-                creation_response = session.start_new_session() 
-                if session.sid_token and session.email_addr:
+                success = session.start_new_session()
+                if success:
                     new_session_id = session.sid_token
                     new_email_address = session.email_addr
                     content = {'type': 'start_session', 'email': new_email_address, 'sid': new_session_id}
@@ -136,107 +150,119 @@ class EmailHandler:
                     new_state = None 
                     new_session_data = (new_session_id, new_email_address)
                 else:
-                    response = creation_response or "Failed to create session."
+                    response = "Error: Could not start a new session. The mail server might be down."
                     new_state = None
-            except Exception as e:
-                response = f"Sorry, I had trouble connecting to the email service. Error: {e}"
-                new_state = None
-            return (new_state, response, new_session_data, None)
-        elif subintent == 'restore_session':
-            provided_id = self._extract_session_id(user_input)
-            if provided_id:
-                try:
+                return (new_state, response, new_session_data, None)
+            elif subintent == 'restore_session':
+                provided_id = self._extract_session_id(user_input)
+                if provided_id:
                     session = GuerrillaSession()
-                    restore_response = session.restore_session(sid_token=provided_id)
-                    if session.email_addr:
+                    success = session.restore_session(sid_token=provided_id)
+                    if success:
                         email_address = session.email_addr
                         content = {'type': 'restore_session', 'email': email_address, 'sid': provided_id}
                         response = self.responder.generate_response(content)                      
                         new_state = None 
                         new_session_data = (provided_id, email_address)
                     else:
-                        response = restore_response if restore_response else "That session ID seems invalid."
+                        response = "Error: Could not restore session."
                         new_state = 'awaiting_session_restore_confirm'
-                except Exception as e:
-                    response = f"An error occurred during restore: {e}. Would you like to try another ID?"
-                    new_state = 'awaiting_session_restore_confirm'
-            else:
-                response = "Okay, I can help with that. What is your session ID?"
-                new_state = 'awaiting_session_restore'
-            return (new_state, response, new_session_data, None)
-        elif subintent == 'end_session' and session_id:
-            response = "Are you sure you want to end your current session? This will permanently delete your temporary email address."
-            new_state = 'awaiting_session_end_confirm'
-            return (new_state, response, None, None)
-        if current_state == 'awaiting_session_start_confirm':
-            if 'yes' in user_input.lower():
-                return self.handle_email_task(None, 'start_session', user_input, None)
-            else:
-                response = "Okay, no problem. Let me know if you change your mind."
-                new_state = None
-            return (new_state, response, None, None)
-        elif current_state == 'awaiting_session_restore':
-            provided_id = self._extract_session_id(user_input)
-            if provided_id:
-                return self.handle_email_task(None, 'restore_session', user_input, None)
-            else:
-                response = "I didn't catch a session ID in that message. Please provide your full session ID, or say 'cancel'."
-            return (new_state, response, None, None)
-        elif current_state == 'awaiting_session_restore_confirm':
-            if 'no' in user_input.lower() or 'cancel' in user_input.lower():
-                response = "Okay, cancelling session restore."
-                new_state = None 
+                else:
+                    response = "Okay, I can help with that. What is your session ID?"
+                    new_state = 'awaiting_session_restore'
+                return (new_state, response, new_session_data, None)
+            elif subintent == 'end_session' and session_id:
+                response = "Are you sure you want to end your current session? This will permanently delete your temporary email address."
+                new_state = 'awaiting_session_end_confirm'
                 return (new_state, response, None, None)
-            provided_id = self._extract_session_id(user_input)
-            if provided_id:
-                return self.handle_email_task(None, 'restore_session', user_input, None)
-            else:
-                response = "Okay, what is the session ID you'd like to try?"
-                new_state = 'awaiting_session_restore' 
-            return (new_state, response, None, None)
-        elif current_state == 'awaiting_session_end_confirm':
-            if 'yes' in user_input.lower():
-                try:
+            
+            if current_state == 'awaiting_session_start_confirm':
+                if 'yes' in user_input.lower():
+                    return self.handle_email_task(None, 'start_session', user_input, None)
+                else:
+                    response = "Okay, no problem. Let me know if you change your mind."
+                    new_state = None
+                return (new_state, response, None, None)
+            elif current_state == 'awaiting_session_restore':
+                provided_id = self._extract_session_id(user_input)
+                if provided_id:
+                    return self.handle_email_task(None, 'restore_session', user_input, None)
+                else:
+                    response = "I didn't catch a session ID in that message. Please provide your full session ID, or say 'cancel'."
+                return (new_state, response, None, None)
+            elif current_state == 'awaiting_session_restore_confirm':
+                if 'no' in user_input.lower() or 'cancel' in user_input.lower():
+                    response = "Okay, cancelling session restore."
+                    new_state = None 
+                    return (new_state, response, None, None)
+                provided_id = self._extract_session_id(user_input)
+                if provided_id:
+                    return self.handle_email_task(None, 'restore_session', user_input, None)
+                else:
+                    response = "Okay, what is the session ID you'd like to try?"
+                    new_state = 'awaiting_session_restore' 
+                return (new_state, response, None, None)
+            elif current_state == 'awaiting_session_end_confirm':
+                if 'yes' in user_input.lower():
                     session = GuerrillaSession()
                     session.restore_session(sid_token=session_id)
-                    session.forget_current_email() 
-                    response = "Your session has been ended and your email address deleted. Let me know if you need a new one."
+                    success = session.forget_current_email()
+                    if success:
+                        response = "Your session has been ended and your email address deleted. Let me know if you need a new one."
+                        new_session_data = (None, None) 
+                    else:
+                        response = "Sorry, I had trouble ending the session. Please try again."
                     new_state = None
-                    new_session_data = (None, None) 
-                except Exception as e:
-                    response = f"Sorry, I had trouble ending the session. Error: {e}"
+                else:
+                    response = "Okay, I won't end your session. What's next?"
                     new_state = None
-            else:
-                response = "Okay, I won't end your session. What's next?"
-                new_state = None
-            return (new_state, response, new_session_data, None)
-        elif current_state == 'awaiting_view_index':
-            email_index_str = self._extract_email_id(user_input)
-            if email_index_str:
-                return self.handle_email_task('list_email_loop', 'view_email', user_input, session_id)
-            else:
-                response = "I didn't catch that. Please provide a number for the email you want to view, or say 'cancel'."
-                new_state = 'awaiting_view_index'
-            return (new_state, response, None, None)
-        elif current_state == 'awaiting_download_index':
-            indices_str = self._extract_email_indices(user_input, "download")
-            if indices_str:
-                return self.handle_email_task('list_email_loop', 'download_email', user_input, session_id)
-            else:
-                response = "I didn't catch that. Please provide indices (e.g., '1', '1, 2', '1-3', 'all'), or say 'cancel'."
-                new_state = 'awaiting_download_index'
-            return (new_state, response, None, None)
-        elif current_state == 'awaiting_delete_index':
-            indices_str = self._extract_email_indices(user_input, "delete")
-            if indices_str:
-                return self.handle_email_task('list_email_loop', 'delete_email', user_input, session_id)
-            else:
-                response = "I didn't catch that. Please provide indices (e.g., '1', '1, 2', '1-3', 'all'), or say 'cancel'."
-                new_state = 'awaiting_delete_index'
-            return (new_state, response, None, None)
-
-        if session_id:
-            try:
+                return (new_state, response, new_session_data, None)
+            elif current_state == 'awaiting_view_index':
+                email_index_str = self._extract_email_id(user_input)
+                if email_index_str:
+                    return self.handle_email_task('email_manage_loop', 'view_email', user_input, session_id)
+                else:
+                    response = "I didn't catch that. Please provide a number for the email you want to view, or say 'cancel'."
+                    new_state = 'awaiting_view_index'
+                return (new_state, response, None, None) 
+            elif current_state == 'awaiting_download_index':
+                indices_str = self._extract_email_indices(user_input, "download")
+                if indices_str:
+                    return self.handle_email_task('email_manage_loop', 'download_email', user_input, session_id)
+                else:
+                    response = "I didn't catch that. Please provide indices (e.g., '1', '1, 2', '1-3', 'all'), or say 'cancel'."
+                    new_state = 'awaiting_download_index'
+                return (new_state, response, None, None)
+            elif current_state == 'awaiting_delete_index':
+                indices_str = self._extract_email_indices(user_input, "delete")
+                if indices_str:
+                    if indices_str.strip() == 'all':
+                        response = self.responder.generate_response({'type': 'confirm_delete_all'})
+                        new_state = 'awaiting_delete_all_confirm'
+                    else:
+                        return self.handle_email_task('email_manage_loop', 'delete_email', user_input, session_id)
+                else:
+                    response = "I didn't catch that. Please provide indices (e.g., '1', '1, 2', '1-3', 'all'), or say 'cancel'."
+                    new_state = 'awaiting_delete_index'
+                return (new_state, response, None, None)
+            elif current_state == 'awaiting_delete_all_confirm':
+                if 'yes' in user_input.lower():
+                    session = GuerrillaSession()
+                    session.restore_session(sid_token=session_id)
+                    deleted_ids = session.delete_emails('all')
+                    
+                    if deleted_ids is not None:
+                        result_text = f"Successfully deleted {len(deleted_ids)} email(s)."
+                        response = self.responder.generate_response({'type': 'delete_emails', 'result_text': result_text})
+                    else:
+                        response = "Sorry, I failed to delete those emails."
+                    new_state = 'email_manage_loop'
+                else:
+                    response = "Okay, I've cancelled the deletion."
+                    new_state = 'email_manage_loop'
+                return (new_state, response, None, None)
+            
+            if session_id:
                 session = GuerrillaSession()
                 session.restore_session(sid_token=session_id) 
                 if not session.email_addr:
@@ -248,56 +274,78 @@ class EmailHandler:
                 if subintent in ['view_email', 'download_email', 'delete_email']:
                     session.get_inbox_list()
                 if subintent in ['list_emails', 'update_inbox']:
-                    session.get_inbox_list() 
-                    response = self.responder.generate_response({'type': 'list_emails', 'inbox': session.inbox})
-                    new_state = 'list_email_loop'
+                    inbox = session.get_inbox_list()
+                    response = self.responder.generate_response({'type': 'list_emails', 'inbox': inbox})
+                    new_state = 'email_manage_loop'
                 elif subintent == 'view_email':
                     email_index_str = self._extract_email_id(user_input)
                     if email_index_str:
-                        real_mail_id = self._get_mail_id_from_index(session, email_index_str)
-                        if not real_mail_id:
-                             response = f"Sorry, I couldn't find an email with index '{email_index_str}'."
-                             new_state = 'list_email_loop'
-                             return (new_state, response, None, None)
                         email_content = session.fetch_email_body(email_index_str)
                         if isinstance(email_content, dict) and 'mail_body' in email_content:
                             response = f"Opening email {email_content['mail_id']}..."
                             action_data = {'action': 'view_email', 'data': email_content}
                             new_state = None 
                         else:
-                            response = str(email_content)
-                            new_state = 'list_email_loop'
+                            response = f"Error: Could not fetch email index {email_index_str}."
+                            new_state = 'email_manage_loop'
                     else:
                         response = "Which email index would you like to view? Please enter a number."
                         new_state = 'awaiting_view_index'
                 elif subintent == 'download_email':
                     indices_str = self._extract_email_indices(user_input, subintent)
                     if indices_str:
-                        result_text = session.download_emails(indices_str)
+                        (downloaded_files, failed_files) = session.download_emails(indices_str)
+                        result_text = f"Successfully downloaded {len(downloaded_files)} email(s)."
+                        if failed_files > 0:
+                            result_text += f" {failed_files} failed."
                         response = self.responder.generate_response({'type': 'download_emails', 'result_text': result_text})
-                        new_state = 'list_email_loop'
+                        new_state = 'email_manage_loop'
                     else:
                         response = "Which email(s) would you like to download? You can enter '1', '1, 2', '1-3', or 'all'."
                         new_state = 'awaiting_download_index'
                 elif subintent == 'delete_email':
                     indices_str = self._extract_email_indices(user_input, subintent)
                     if indices_str:
-                        result_text = session.delete_emails(indices_str)
-                        response = self.responder.generate_response({'type': 'delete_emails', 'result_text': result_text})
-                        new_state = 'list_email_loop'
+                        if indices_str.strip() == 'all':
+                            response = self.responder.generate_response({'type': 'confirm_delete_all'})
+                            new_state = 'awaiting_delete_all_confirm'
+                        else:
+                            deleted_ids = session.delete_emails(indices_str)
+                            if deleted_ids is not None:
+                                result_text = f"Successfully deleted {len(deleted_ids)} email(s)."
+                            else:
+                                result_text = "I failed to delete those emails."
+                            response = self.responder.generate_response({'type': 'delete_emails', 'result_text': result_text})
+                            new_state = 'email_manage_loop'
                     else:
                         response = "Which email(s) would you like to delete? You can enter '1', '1, 2', '1-3', or 'all'."
                         new_state = 'awaiting_delete_index'
                 elif subintent == 'end_session':
                     response = "Are you sure you want to end your current session?"
                     new_state = 'awaiting_session_end_confirm'
+                elif subintent == 'manage_session':
+                    response = self.responder.generate_response({'type': 'manage_session'})
+                    new_state = 'email_manage_loop'
                 else: 
-                    response = "You have an active email session. You can 'list emails', 'view [index]', 'delete [index]', 'download [index]', or 'end session'."
-                    new_state = 'general_email_loop'
-            except Exception as e:
-                response = f"It looks like your session might have expired or an error occurred. Error: {e}. Please 'start' a new session or 'restore' your previous one."
-                new_state = None
-                new_session_data = (None, None)  
-            return (new_state, response, new_session_data, action_data)
-        
+                    response = self.responder.generate_response({'type': 'manage_session'})
+                    new_state = 'email_manage_loop'    
+                return (new_state, response, new_session_data, action_data)
+            pass
+
+        except (ConnectionError, NameResolutionError) as e:
+            print(f"[TRANSACTION_ERROR] Connection error: {e}")
+            response = "I'm sorry, I'm having trouble connecting to the email service. Please check your internet connection and try again."
+            new_state = None
+        except (RequestException, HTTPError) as e:
+            print(f"[TRANSACTION_ERROR] API error: {e}")
+            response = "The email service seems to be down or experiencing issues. Please try again in a moment."
+            new_state = None
+        except ValueError as e:
+            print(f"[TRANSACTION_ERROR] Value error: {e}")
+            response = f"An error occurred: {e}"
+            new_state = current_state
+        except Exception as e:
+            print(f"[TRANSACTION_ERROR] An unexpected error occurred: {e}")
+            response = f"An unexpected error occurred: {e}. Returning to the main menu."
+            new_state = None
         return (new_state, response, new_session_data, action_data)
